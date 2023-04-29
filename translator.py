@@ -10,7 +10,12 @@ def index():
     if request.method == "POST":
         query = request.form["query"]
         if query:
-            return jsonify({'output':eng_to_telugu(translate(query))})
+            try:
+                trans_lation,variable=translate(query)
+            except ValueError:
+                trans_lation ='syntax error'
+                variable = '_'
+            return jsonify({'output':eng_to_telugu(trans_lation,variable)})
         return({'error':'Error'})
     return render_template('index.html')
 
@@ -25,9 +30,13 @@ def translate(query):
 
     for line in output.split('\n'.encode()):
         if line and line != SYNTAX_ERROR.encode():
+            l = line.decode().split()
+            var = l[1]
+            l[1] = 'ch1'
+            str =' '.join(l)
             translator = Translator(service_urls=['translate.google.com'])
-            translation = translator.translate(line.decode(), dest='te').text
-            return translation
+            translation = translator.translate(str, dest='te').text
+            return translation,var
     else:
         return SYNTAX_ERROR
 

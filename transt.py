@@ -43,6 +43,7 @@
 #     return telugu_text
 from langdetect import detect
 from googletrans import Translator
+import re
 
 
 letters   = {
@@ -63,20 +64,27 @@ data_type = {
                  "long": "పెద్దది",
                  "float": "ఫ్లోట్",
                  "double": "డబల్",
-                 "void": "ఖాళీ"
+                 "void": "ఖాళీ",
+                 "unsigned":"సానుకూల సంఖ్య",
+                 "signed":"ప్రతికూల సంఖ్య",
+                 "struct":"నిర్మాణం",
+                 "(args)":"(ఆర్గ్స్)",
+                 "const" :"స్థిరంగా",
+                 "counst":"స్థిరంగా",
+                 "ch1":"ch1",
+                 "":""
                 }
-sp_words  = {
-                 "(ARGS)":"ఆర్గ్స్",
-                 "const" :"స్థిరంగా"
-}
 
-def eng_to_telugu(text,var):
 
+def eng_to_telugu(text,var,d_type,len_str_w):
+    print(text)
     splited_list = text.split()
     eng_word_list =[]
 
     try:
         for i in splited_list:
+            if i.isnumeric():
+                continue
             if detect(i)!='te':
                 eng_word_list.append(i)
     except :
@@ -85,24 +93,39 @@ def eng_to_telugu(text,var):
     if eng_word_list:
         if text == 'syntax error':
             return 'సింటాక్స్ లోపం'
-        
+        print(eng_word_list)
         if len(eng_word_list)==1:
             reptxt=variable(eng_word_list[0])
             text = text.replace(eng_word_list[0],reptxt,1)
         elif len(eng_word_list)==2:
-            reptxt=variable(eng_word_list[1])
-            if var=='var':
+            if var=='var' or eng_word_list[1] == 'CH1':
+                reptxt=variable(eng_word_list[1])
                 text = text.replace(eng_word_list[0],data_type[eng_word_list[0].lower()],1)
                 text = text.replace(eng_word_list[1],reptxt,1)
             else:
+                reptxt=variable(eng_word_list[0])
                 text = text.replace(eng_word_list[0],reptxt,1)
                 text = text.replace(eng_word_list[1],data_type[eng_word_list[1].lower()],1)
-        elif len(eng_word_list)==3:
-            reptxt=variable(eng_word_list[0])
-            text = text.replace(eng_word_list[0],reptxt,1)
-            text = text.replace(eng_word_list[1],sp_words[eng_word_list[1]],1)
-            text = text.replace(eng_word_list[2],data_type[eng_word_list[2].lower()],1)
-        text = text.replace(variable('ch1'),variable(var),1)
+        elif len(eng_word_list)==3: 
+            if var == 'var':
+                reptxt=variable(eng_word_list[2])
+                text = text.replace(eng_word_list[2],reptxt,1)
+                text = text.replace(eng_word_list[1],data_type[eng_word_list[1]],1)
+                text = text.replace(eng_word_list[0],data_type[eng_word_list[0].lower()],1)
+            else:
+                reptxt=variable(eng_word_list[0])
+                text = text.replace(eng_word_list[0],reptxt,1)
+                text = text.replace(eng_word_list[1],data_type[eng_word_list[1]],1)
+                text = text.replace(eng_word_list[2],data_type[eng_word_list[2].lower()],1)
+        text = text.replace(variable('ch1'),variable(var)+'ను',1)
+        substr = data_type['char']
+        regex_pat = rf'{substr}(?!.*{substr})'
+        text = re.sub(regex_pat,data_type[d_type],text)
+        text = re.sub('Int',data_type['int'],text)
+        text  = re.sub('CH1',variable(var),text)
+        text  = re.sub('to const char',data_type['const']+' '+data_type[d_type]+' కు',text)
+        text  = re.sub('const',data_type['const'],text)
+        # text = text.replace(data_type['char'],data_type[d_type],1)
         return text
     else:
         return text

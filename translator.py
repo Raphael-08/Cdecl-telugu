@@ -37,60 +37,63 @@ def translate(query):
             if l[-1]=='var':
                 var,data=l[-1],l[-2]
                 l[-1],l[-2]='ch1','char'
-                translator = Translator(service_urls=['translate.google.com'])
-                translation = translator.translate(line.decode(),src='en', dest='te').text
-                return translation,var,data,len(l)
+                translator = Translator()
+                translation = translator.translate(line.decode(), dest='te').text
+                return translation,var,data,line.decode()
             var = l[1]
             l[1] = 'ch1'
-            data = ''
-            if len(l)<8:
-                if len(l)>3:
-                    data= l[-1]
-                    l[-1]="char"
-                else:
-                    data = l[0]
-                    l[0] = "char"
+            data = l[-1]
+            l[-1] = "char"
+            # if len(l)<8:
+            #     if len(l)>3:
+            #         data= l[-1]
+            #         l[-1]="char"
+            #     else:
+            #         data = l[0]
+            #         l[0] = "char"
             if len(l)>=8:
-                data = l[-1]
-                l[-1] = 'char'
+                # data = l[-1]
+                # l[-1] = 'char'
                 splt=' '.join(l).split('(')
                 if len(splt)==2:
                     list_2 = splt[1].split(')')
                     splt[1]=list_2[0].split(',')
                     splt.append(list_2[1])
                 print(splt)
-                if len(splt)==1:
-                    # g=[l[i:i+4] for i in range(0,len(l),4)]
-                    # print(g)
-                    # splt = [' '.join(j) for j in g]
-                    splt[0] = ' '.join(l[:5])
-                    splt.append(' '.join(l[5:]))
+                # if len(splt)==1:
+                #     # g=[l[i:i+4] for i in range(0,len(l),4)]
+                #     # print(g)
+                #     # splt = [' '.join(j) for j in g]
+                #     splt[0] = ' '.join(l[:5])
+                #     splt.append(' '.join(l[5:]))
 
-                    print(splt)
-                li = []
+                #     print(splt)
+                # li = []
                 a=[]
                 for line_splt in splt:
                     if type(line_splt) == type(l):
                         for i in line_splt:
-                            translator = Translator(service_urls=['translate.google.com'])
-                            translation = translator.translate(i,src='en', dest='te').text
+                            translator = Translator()
+                            translation = translator.translate(i, dest='te').text
                             a.append(translation)
-                        li.append(a)
-                    else:
-                        translator = Translator(service_urls=['translate.google.com'])
-                        translation = translator.translate(line_splt,src='en', dest='te').text
-                        print(translation)
-                        li.append(translation)
-                if len(li)==3:
-                    translation = li[0]+' ('+','.join(li[1])+') '+li[2]
-                else:
-                    translation = ' '.join(li)
-                return translation,var,data,len(l)
+                translator = Translator()
+                translation = translator.translate(' '.join(l), dest='te').text
+                            # li.append(a)
+                    # else:
+                    #     translator = Translator(service_urls=['translate.google.com'])
+                    #     translation = translator.translate(line_splt,src='en', dest='te').text
+                    #     print(translation)
+                    #     li.append(translation)
+                # if len(li)==3:
+                #     translation = li[0]+' ('+','.join(li[1])+') '+li[2]
+                # else:
+                #     translation = ' '.join(li)
+                return translation,var,data,','.join(a)
             str =' '.join(l)
-            translator = Translator(service_urls=['translate.google.com'])
-            translation = translator.translate(str,src='en', dest='te').text
-            print(translation)
-            return translation,var,data,len(l)
+            translator = Translator()
+            translation = translator.translate(str, dest='te').text
+            print(type(translation))
+            return translation,var,data,line.decode()
     else:
         return SYNTAX_ERROR
 

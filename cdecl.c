@@ -970,10 +970,13 @@ void docexplain(constvol, type, cast, name) char *constvol, *type, *cast, *name;
     else if (prev == 'r')
       unsupp("reference to type void", "pointer to void");
   }
-  (void)printf("cast %s into %s", name, cast);
   if (strlen(constvol) > 0)
-    (void)printf("%s ", constvol);
-  (void)printf("%s\n", type);
+    (void)printf("%s1 ", constvol);
+  (void)printf("%s6 ", type);
+  (void)printf("%s7 ", cast);
+  (void)printf("%s 0into4 ", name);
+  (void)printf("cast\n");
+  (void)printf("%s1\n%s6\n%s7\n%s4\n", constvol,type,cast,name);
 }
 
 void doset(opt) char *opt;

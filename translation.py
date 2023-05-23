@@ -44,7 +44,11 @@ data_type = {
     "const5": "స్థిరమైన",
 
     " as1 ": "ను ",
+    " 0into4 ": "ను ",
     "declare": "ప్రకటించండి",
+    "cast": "ప్రసారం చేయండి",
+    " pointer to 7": " పాయింటర్లోకి",
+    " pointer to  7": " పాయింటర్లోకి",
     "pointer to 3": "పాయింటర్గా",
     "pointer to": "పాయింటర్కి",
     "array of": "శ్రేణి యొక్క",
@@ -69,8 +73,13 @@ def transt(text):
 
     if text == "syntax error":
         return data_type[text]
+    
     sen_list = text.split()
     var = sen_list[0]
+
+    if sen_list[-1]=='cast':
+        text = cast_restruct(text)
+        var = cast_var(text)
 
     if sen_list[-1] == "var":
         var = sen_list[-2]
@@ -148,7 +157,7 @@ def eng_find(text):
 
 
 def transliterate_english_to_telugu(text):
-    if len(text) < 3:
+    if len(text) < 4:
         emptstr = ''
         for i in text:
             try:
@@ -166,6 +175,24 @@ def typec_eng(text):
     matches = re.findall(pattern, text)
     return matches[0].split()
 
+def cast_restruct(string):
+    pattern = r'function\s*(?:\([^)]*\))?\s*returning'
+    match = re.search(pattern, string)
+    if match:
+        extracted_string = match.group(0)
+        updated_string = re.sub(pattern, '', string)
+        return extracted_string+" "+updated_string
+    else:
+        return string
+    
+def cast_var(string):
+
+    pattern = r'7\s+(\w+)\s+0'
+    match = re.search(pattern, string)
+    if match:
+        extracted_word = match.group(1)
+        print(extracted_word)
+        return extracted_word
 # x = input("enter the string:")
 # # print("translated string:"+transt(x))
 # a,b=transt(x)

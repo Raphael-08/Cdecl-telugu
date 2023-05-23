@@ -1,5 +1,5 @@
     <html>
-        <title>c to telugu</title>
+        <title>Cdecl: telugu</title>
         <head><head>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script>
@@ -7,33 +7,40 @@
             </script>
             <script type="text/javascript">
                 $(document).ready(function() {
-                  var inputTimeout;
-                  $('#query').on('input', function() {
+                var inputTimeout;
+                $('#query').on('input', function() {
                     clearTimeout(inputTimeout);
                     var query = $(this).val();
                     if (query.length >= 3) {
-                      inputTimeout = setTimeout(function() {
+                    inputTimeout = setTimeout(function() {
+                        $('#spinner').show(); // Show the loading GIF
                         $.ajax({
-                          data: {
+                        data: {
                             query: query,
-                          },
-                          type: 'POST',
-                          url: '/'
+                        },
+                        type: 'POST',
+                        url: '/'
                         }).done(function(data) {
-                          $('#output').text(data.output).show();
+                        $('#output').text(data.output).show();
+                        setTimeout(function() {
+                            $('#spinner').hide(); // Hide the loading GIF after a delay
+                        }, 100); // Adjust the delay as needed
                         });
-                      }, 250); 
+                    }, 500); 
                     } 
-                  });
                 });
-              </script>
+                });
+            </script>
               
             <style type="text/css">
                 center{
                         text-align:center;
                     }
-        
+
                 body {
+                    background-image: url('https://img.freepik.com/free-photo/abstract-digital-grid-black-background_53876-97647.jpg');
+                    background-repeat: no-repeat;
+                    background-size: cover;
                     background-color:black;
                     margin: 0px;
                     color: #99b8bd;
@@ -117,13 +124,38 @@
            
                 #spinner {
                     position: relative;
-                    left: 135px;
-                    top: 20px;
+                    left: 125px;
+                    top: 9px;
                     width: 34px;
                     height: 34px;
                     margin-bottom: -34px;
                     display: none;
                 }
+                .lds-dual-ring {
+                    display: inline-block;
+                    width: 40px;
+                    height: 40px;
+                }
+                .lds-dual-ring:after {
+                    content: " ";
+                    display: block;
+                    width: 32px;
+                    height: 32px;
+                    margin: 4px;
+                    border-radius: 50%;
+                    border: 3px solid #fff;
+                    border-color: #fff transparent #fff transparent;
+                    animation: lds-dual-ring 1.2s linear infinite;
+                }
+                @keyframes lds-dual-ring {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+                
             </style>     
         
                
@@ -134,8 +166,10 @@
             <div id="title">
                 <h1>cdecl</h1>
                 <h2>C gibberish <span class="arrow">&harr;</span> Telugu</h2>
-                    <input id = "query" class = "searcher" name = "query"  value="" autocomplete="off"/>
-                <div class = "searcher" id="output"></div>
+                    <input id = "query" class = "searcher" name = "query"  value="" autocomplete="off">
+                    <div id="spinner" class="lds-dual-ring">
+                    </div>
+                <div class = "text_result" id="output"></div>
                 
         </div>
     

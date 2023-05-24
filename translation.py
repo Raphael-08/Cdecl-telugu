@@ -43,18 +43,20 @@ data_type = {
     "const": "స్థిరమైన", "const4": "స్థిరమైన",
     "const5": "స్థిరమైన",
 
-    " as1 ": "ను ",
+    " as1": "ను",
     " 0into4 ": "ను ",
     "declare": "ప్రకటించండి",
     "cast": "ప్రసారం చేయండి",
     " pointer to 7": " పాయింటర్లోకి",
     " pointer to  7": " పాయింటర్లోకి",
     "pointer to 3": "పాయింటర్గా",
+    "reference to 3": "రెఫరెన్స్‌గా",
+    "reference to": "రెఫరెన్స్‌కి",
     "pointer to": "పాయింటర్కి",
     "array of": "శ్రేణి యొక్క",
     "array ": " శ్రేణి ",
     " of 3 ": " గా ",
-    " of ": " కి ",
+    "of": "కి",
     "returning": "రిటర్నింగ్‌",
     "function": "ఫంక్షన్",
     "syntax error": "సింటాక్స్ లోపం",
@@ -198,7 +200,8 @@ def declare_restruct(string):
         updated_string = updated_string.split('^')
         return updated_string[0]+extracted_string+" "+updated_string[1]
     else:
-        return string
+        a = string.split('^')
+        return a[0]+' '+a[1] 
 
 def cast_var(string):
 

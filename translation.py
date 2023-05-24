@@ -30,11 +30,11 @@ data_type = {
     "long": "పెద్దది", "float": "ఫ్లోట్", "double": "డబల్",
     "void": "ఖాళీ", "unsigned": "సానుకూల సంఖ్య", "signed": "ప్రతికూల సంఖ్య",
 
-    "pointer to char": "చార్కి పాయింటర్గా", "pointer to int": "పూర్ణంకి పాయింటర్గా",
-    "pointer to short": "చిన్నదికి పాయింటర్గా", "pointer to long": "పెద్దదికి పాయింటర్గా",
-    "pointer to float": "ఫ్లోట్కి పాయింటర్గా", "pointer to double": "డబల్కి పాయింటర్గా",
-    "pointer to void": "ఖాళీకి పాయింటర్గా", "pointer to unsigned": "సానుకూల సంఖ్యకి పాయింటర్గా",
-    "pointer to signed": "ప్రతికూల సంఖ్యకి పాయింటర్గా", "args": "ఆర్గ్స్",
+    "pointer to char": "చార్కి పాయింటర్", "pointer to int": "పూర్ణంకి పాయింటర్",
+    "pointer to short": "చిన్నదికి పాయింటర్", "pointer to long": "పెద్దదికి పాయింటర్",
+    "pointer to float": "ఫ్లోట్కి పాయింటర్", "pointer to double": "డబల్కి పాయింటర్",
+    "pointer to void": "ఖాళీకి పాయింటర్", "pointer to unsigned": "సానుకూల సంఖ్యకి పాయింటర్",
+    "pointer to signed": "ప్రతికూల సంఖ్యకి పాయింటర్", "args": "ఆర్గ్స్",
 
     "auto2": "ఆటో", "extern2": "ఎక్స్టర్న్‌ ",
     "static2": "స్టాటిక్‌", "register2": "రిజిస్టర్‌",
@@ -73,11 +73,14 @@ def transt(text):
 
     if text == "syntax error":
         return data_type[text]
-    
+
     sen_list = text.split()
     var = sen_list[0]
 
-    if sen_list[-1]=='cast':
+    if sen_list[-1] == 'declare':
+        text = declare_restruct(text)
+
+    if sen_list[-1] == 'cast':
         text = cast_restruct(text)
         var = cast_var(text)
 
@@ -175,6 +178,7 @@ def typec_eng(text):
     matches = re.findall(pattern, text)
     return matches[0].split()
 
+
 def cast_restruct(string):
     pattern = r'function\s*(?:\([^)]*\))?\s*returning'
     match = re.search(pattern, string)
@@ -184,7 +188,18 @@ def cast_restruct(string):
         return extracted_string+" "+updated_string
     else:
         return string
-    
+
+def declare_restruct(string):
+    pattern = r'function\s*(?:\([^)]*\))?\s*returning'
+    match = re.search(pattern, string)
+    if match:
+        extracted_string = match.group(0)
+        updated_string = re.sub(pattern, '', string)
+        updated_string = updated_string.split('^')
+        return updated_string[0]+extracted_string+" "+updated_string[1]
+    else:
+        return string
+
 def cast_var(string):
 
     pattern = r'7\s+(\w+)\s+0'

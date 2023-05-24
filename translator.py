@@ -4,6 +4,7 @@ import subprocess
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=["GET", 'POST'])
 def index():
     if request.method == "POST":
@@ -13,9 +14,11 @@ def index():
         return ({'error': 'Error'})
     return render_template('index.html')
 
+
 SYNTAX_ERROR = 'syntax error'
 
 command = ['./cdecl']
+
 
 def translate(query):
     queries = [query, 'explain ' + query+';', 'declare ' + query+';']
@@ -25,11 +28,12 @@ def translate(query):
 
     for line in output.split('\n'.encode()):
         if line and line != SYNTAX_ERROR.encode():
-            print(line.decode())
+            print(line.decode().split('\n'))
             tr = transt(line.decode())
             return tr
     else:
         return transt(SYNTAX_ERROR)
+
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)

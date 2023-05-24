@@ -949,7 +949,7 @@ void dodexplain(storage, constvol1, constvol2, type, decl) char *storage,
       break;
     }
 
-  (void)printf("%s as1 ", savedname);
+  (void)printf("%s as1 ^", savedname);
   if (*storage)
     (void)printf("%s2 ", storage);
   if (*constvol1)
@@ -976,7 +976,7 @@ void docexplain(constvol, type, cast, name) char *constvol, *type, *cast, *name;
   (void)printf("%s7 ", cast);
   (void)printf("%s 0into4 ", name);
   (void)printf("cast\n");
-  (void)printf("%s1\n%s6\n%s7\n%s4\n", constvol,type,cast,name);
+  (void)printf("%s1\n%s6\n%s7\n%s4\n", constvol, type, cast, name);
 }
 
 void doset(opt) char *opt;

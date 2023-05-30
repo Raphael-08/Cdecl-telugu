@@ -47,12 +47,13 @@ data_type = {
     " 0into4 ": "ను ",
     "declare": "ప్రకటించండి",
     "cast": "ప్రసారం చేయండి",
-    " pointer to 7": " పాయింటర్లోకి",
+    "pointer to 7": " పాయింటర్లోకి",
     " pointer to  7": " పాయింటర్లోకి",
     "pointer to 3": "పాయింటర్గా",
     "reference to 3": "రెఫరెన్స్‌గా",
     "reference to": "రెఫరెన్స్‌కి",
     "pointer to": "పాయింటర్కి",
+    "member of":"మెంబర్‌కి",
     "array of": "శ్రేణి యొక్క",
     "array ": " శ్రేణి ",
     " of 3 ": " గా ",
@@ -66,13 +67,14 @@ data_type = {
     "enum": "ఇనమ్‌",
     "union": "యూనియన్",
     "struct": "నిర్మాణం",
+    "class": "క్లాస్‌",
 
     "": "",
 }
 
 
 def transt(text):
-
+    text1 = text
     if text == "syntax error":
         return data_type[text]
 
@@ -81,10 +83,14 @@ def transt(text):
 
     if sen_list[-1] == 'declare':
         text = declare_restruct(text)
+        if re.search(r'pointer to member of class', text):
+            text = class_restructd(text1)
 
     if sen_list[-1] == 'cast':
         text = cast_restruct(text)
         var = cast_var(text)
+        if re.search(r'pointer to member of class', text):
+            text = class_restructc(text)
 
     if sen_list[-1] == "var":
         var = sen_list[-2]
@@ -93,14 +99,14 @@ def transt(text):
     if '(' in telugu_text:
         type_w = typec_eng(telugu_text)
         for i in range(len(type_w)):
-            word = type_w[i]
-            if re.match(r'^[a-zA-Z]+$', word):
+            word = type_w[i].strip()
+            if re.match(r'^[a-zA-Z0-9]+$', word):
                 r = transliterate_english_to_telugu(word)
                 type_w[i] = r
-                a = telugu_text.split('(')
-                if len(a) == 2:
-                    b = a[1].split(')')
-                telugu_text = a[0]+'('+''.join(type_w)+')'+b[1]
+            a = telugu_text.split('(')
+            if len(a) == 2:
+                b = a[1].split(')')
+            telugu_text = a[0]+'('+','.join(type_w)+')'+b[1]
     telugu_text = telugu_text.replace(var, variable(var), 1)
 
     try:
@@ -108,7 +114,6 @@ def transt(text):
         telugu_text = telugu_text.replace(eng_w, variable(eng_w))
     except:
         pass
-
     telugu_text = transt1(telugu_text)
     return telugu_text
 
@@ -138,6 +143,7 @@ def replace_words_with_values(string, dictionary):
 def transt1(text):
     text = re.sub(r'6 3', 'గా', text)
     text = re.sub(r'6 ', 'కి ', text)
+    text = re.sub(r'కి  3', 'గా', text)
     text = re.sub(r'కి  శ్రేణి', ' యొక్క శ్రేణి', text)
     telugu_text = replace_words_with_values(text, data_type)
     return telugu_text
@@ -170,15 +176,21 @@ def transliterate_english_to_telugu(text):
             except:
                 pass
         return emptstr
-    telugu_text = sanscript.transliterate(
-        text, sanscript.ITRANS, sanscript.TELUGU)
+    match = re.search(r'\d+', text)
+    num = ''
+    if match:
+        num = match.group(0)
+        text = re.sub(r'\d+', '', text)
+    
+    text = text.lower()
+    telugu_text = sanscript.transliterate(text, sanscript.ITRANS, sanscript.TELUGU)+num
     return telugu_text
 
 
 def typec_eng(text):
     pattern = r'\((.*?)\)'
     matches = re.findall(pattern, text)
-    return matches[0].split()
+    return matches[0].split(',')
 
 
 def cast_restruct(string):
@@ -191,6 +203,7 @@ def cast_restruct(string):
     else:
         return string
 
+
 def declare_restruct(string):
     pattern = r'function\s*(?:\([^)]*\))?\s*returning'
     match = re.search(pattern, string)
@@ -201,16 +214,39 @@ def declare_restruct(string):
         return updated_string[0]+extracted_string+" "+updated_string[1]
     else:
         a = string.split('^')
-        return a[0]+' '+a[1] 
+        return a[0]+' '+a[1]
 
 def cast_var(string):
-
     pattern = r'7\s+(\w+)\s+0'
     match = re.search(pattern, string)
     if match:
         extracted_word = match.group(1)
         print(extracted_word)
         return extracted_word
+    
+def class_restructd(text1):
+    match = re.search(r'\^(.*?)6',text1)
+    data = match.group(1)+'6'
+    matches = re.findall(r'\bclass\s+(\w+)', text1)
+    text1 = text1.replace('^'+data,'^')
+    match = re.search(r'function\s*(?:\([^)]*\))?\s*returning', text1)
+    if match:
+        extracted_string = match.group(0)
+        updated_string = re.sub(r'function\s*(?:\([^)]*\))?\s*returning', '##', text1)
+        text1 = updated_string.replace('##',extracted_string+' '+data)
+        text1= text1.replace('pointer to member of class '+matches[-1],'class '+variable(matches[-1])+' member of pointer to',1)
+        return text1.replace('^ ','')
+    else:
+        sp = text1.split(matches[-1])
+        text1= sp[0]+matches[-1]+' '+data+sp[-1]
+        text1= text1.replace('pointer to member of class '+matches[-1],'class '+variable(matches[-1])+' member of pointer to',1)
+        return text1.replace('^ ','')
+
+def class_restructc(text):
+    matches = re.findall(r'\bclass\s+(\w+)', text)
+    text= text.replace('pointer to member of class '+matches[0],'class '+variable(matches[0])+' member of pointer to',1)
+    return text
+
 # x = input("enter the string:")
 # # print("translated string:"+transt(x))
 # a,b=transt(x)

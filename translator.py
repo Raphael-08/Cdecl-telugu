@@ -4,7 +4,6 @@ import subprocess
 
 app = Flask(__name__)
 
-
 @app.route("/", methods=["GET", 'POST'])
 def index():
     if request.method == "POST":
@@ -21,14 +20,17 @@ command = ['./cdecl']
 
 
 def translate(query):
+    l = ["auto", "extern","static", "register"]
+    q_l = query.split()
+    if len(q_l)<3 and q_l[0] in l:
+        query = q_l[0]+' '+'int'+' '+q_l[1]
     queries = [query, 'explain ' + query+';', 'declare ' + query+';']
-    process = subprocess.Popen(
-        command,  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    process = subprocess.Popen(command,  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     output, error = process.communicate(input='\n'.join(queries).encode())
 
     for line in output.split('\n'.encode()):
         if line and line != SYNTAX_ERROR.encode():
-            print(line.decode().split('\n'))
+            print(line.decode())
             tr = transt(line.decode())
             return tr
     else:

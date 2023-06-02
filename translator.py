@@ -22,6 +22,8 @@ command = ['./cdecl']
 def translate(query):
     l = ["auto", "extern","static", "register"]
     q_l = query.split()
+    if q_l[0] == 'declare' or q_l[0] == 'cast':
+        return transt(SYNTAX_ERROR)
     if len(q_l)<3 and q_l[0] in l:
         query = q_l[0]+' '+'int'+' '+q_l[1]
     queries = [query, 'explain ' + query+';', 'declare ' + query+';']

@@ -1,5 +1,5 @@
 from langdetect import detect
-from indic_transliteration import sanscript
+from google.transliteration import transliterate_text
 import re
 
 
@@ -16,20 +16,22 @@ letters = {
 }
 
 data_type = {
-    "char6 3": "చార్గా", "int6 3": "పూర్ణంగా", "short6 3": "చిన్నదిగా",
-    "long6 3": "పెద్దదిగా", "float6 3": "ఫ్లోట్గా", "double6 3": "డబల్గా",
-    "void6 3": "ఖాళీగా", "unsigned6 3": "సానుకూల సంఖ్యగా", "signed6 3": "ప్రతికూల సంఖ్యగా",
-    "6 3": "గా",
+    "char$ 3": "చార్గా", "int$ 3": "పూర్ణంగా", "short$ 3": "చిన్నదిగా",
+    "long$ 3": "పెద్దదిగా", "float$ 3": "ఫ్లోట్గా", "double$ 3": "డబల్గా",
+    "void$ 3": "ఖాళీగా", "unsigned$ 3": "సానుకూల సంఖ్యగా", "signed$ 3": "ప్రతికూల సంఖ్యగా",
 
-    "char6": "చార్కి", "int6": "పూర్ణంకి", "short6": "చిన్నదికి",
-    "long6": "పెద్దదికి", "float6": "ఫ్లోట్కి", "double6": "డబల్కి",
-    "void6": "ఖాళీకి", "unsigned6": "సానుకూల సంఖ్యకి", "signed6": "ప్రతికూల సంఖ్యకి",
-    "6 ": "కి ",
+    "char$ ": "చార్కి ", "int$ ": "పూర్ణంకి ", "short$ ": "చిన్నదికి ",
+    "long$ ": "పెద్దదికి ", "float$ ": "ఫ్లోట్కి ", "double$ ": "డబల్కి ",
+    "void$ ": "ఖాళీకి ", "unsigned$ ": "సానుకూల సంఖ్యకి ", "signed$ ": "ప్రతికూల సంఖ్యకి ",
+
+    "char$  ": "చార్కి ", "int$  ": "పూర్ణంకి ", "short$  ": "చిన్నదికి ",
+    "long$  ": "పెద్దదికి ", "float$  ": "ఫ్లోట్కి ", "double$  ": "డబల్కి ",
+    "void$  ": "ఖాళీకి ", "unsigned$  ": "సానుకూల సంఖ్యకి  ", "signed$ ": "ప్రతికూల సంఖ్యకి ",
 
     "char": "చార్", "int": "పూర్ణం", "short": "చిన్నది",
     "long": "పెద్దది", "float": "ఫ్లోట్", "double": "డబల్",
     "void": "ఖాళీ", "unsigned": "సానుకూల సంఖ్య", "signed": "ప్రతికూల సంఖ్య",
-
+  
     "pointer to char": "చార్కి పాయింటర్", "pointer to int": "పూర్ణంకి పాయింటర్",
     "pointer to short": "చిన్నదికి పాయింటర్", "pointer to long": "పెద్దదికి పాయింటర్",
     "pointer to float": "ఫ్లోట్కి పాయింటర్", "pointer to double": "డబల్కి పాయింటర్",
@@ -39,9 +41,8 @@ data_type = {
     "auto2": "ఆటో", "extern2": "ఎక్స్టర్న్‌ ",
     "static2": "స్టాటిక్‌", "register2": "రిజిస్టర్‌",
 
-    "volatile4": "వోలటైల్‌", "volatile5": "వోలటైల్",
-    "const": "స్థిరమైన", "const4": "స్థిరమైన",
-    "const5": "స్థిరమైన",
+    "volatile": "వోలటైల్‌", "volatile4": "వోలటైల్‌", "volatile5": "వోలటైల్",
+    "const": "స్థిరమైన", "const4": "స్థిరమైన", "const5": "స్థిరమైన",
 
     " as1": "ను",
     " 0into4 ": "ను ",
@@ -53,8 +54,8 @@ data_type = {
     "reference to 3": "రెఫరెన్స్‌గా",
     "reference to": "రెఫరెన్స్‌కి",
     "pointer to": "పాయింటర్కి",
-    "member of":"మెంబర్‌కి",
-    "array of": "శ్రేణి యొక్క",
+    "member of":"యొక్క మెంబర్‌కి",
+    "array of 3": "శ్రేణిగా",
     "array ": " శ్రేణి ",
     " of 3 ": " గా ",
     "of": "కి",
@@ -85,7 +86,7 @@ def transt(text):
         text = declare_restruct(text)
         if re.search(r'pointer to member of class', text):
             text = class_restructd(text1)
-
+    print(text)
     if sen_list[-1] == 'cast':
         text = cast_restruct(text)
         var = cast_var(text)
@@ -94,19 +95,12 @@ def transt(text):
 
     if sen_list[-1] == "var":
         var = sen_list[-2]
+    
     telugu_text = replace_words_with_values(text, data_type)
+    print(telugu_text)
 
-    if '(' in telugu_text:
-        type_w = typec_eng(telugu_text)
-        for i in range(len(type_w)):
-            word = type_w[i].strip()
-            if re.match(r'^[a-zA-Z0-9]+$', word):
-                r = transliterate_english_to_telugu(word)
-                type_w[i] = r
-            a = telugu_text.split('(')
-            if len(a) == 2:
-                b = a[1].split(')')
-            telugu_text = a[0]+'('+','.join(type_w)+')'+b[1]
+    telugu_text = arg_var(telugu_text)
+
     telugu_text = telugu_text.replace(var, variable(var), 1)
 
     try:
@@ -119,16 +113,9 @@ def transt(text):
 
 
 def variable(tv):
-    if len(tv) > 2:
-        tv = transliterate_english_to_telugu(tv)
     if detect(tv) != 'te':
-        emptstr = ''
-        for i in tv:
-            try:
-                emptstr += letters[i.upper()]
-            except:
-                pass
-        return emptstr
+        tv = transliterate_english_to_telugu(tv)
+        return tv
     else:
         return tv
 
@@ -141,10 +128,12 @@ def replace_words_with_values(string, dictionary):
 
 
 def transt1(text):
-    text = re.sub(r'6 3', 'గా', text)
-    text = re.sub(r'6 ', 'కి ', text)
+    text = re.sub(r'$ 3', 'గా', text)
+    text = re.sub(r'$ ', 'కి ', text)
+    text = re.sub(r'$  ', 'కి ', text)
     text = re.sub(r'కి  3', 'గా', text)
     text = re.sub(r'కి  శ్రేణి', ' యొక్క శ్రేణి', text)
+    text = re.sub(r'కి శ్రేణి', ' యొక్క శ్రేణి', text)
     telugu_text = replace_words_with_values(text, data_type)
     return telugu_text
 
@@ -168,24 +157,18 @@ def eng_find(text):
 
 
 def transliterate_english_to_telugu(text):
-    if len(text) < 4:
-        emptstr = ''
-        for i in text:
-            try:
-                emptstr += letters[i.upper()]
-            except:
-                pass
-        return emptstr
-    match = re.search(r'\d+', text)
-    num = ''
-    if match:
-        num = match.group(0)
-        text = re.sub(r'\d+', '', text)
-    
-    text = text.lower()
-    telugu_text = sanscript.transliterate(text, sanscript.ITRANS, sanscript.TELUGU)+num
-    return telugu_text
-
+    if len(text) > 2:
+        text = transliterate_text(text, lang_code='te')
+        print(text)
+    if detect(text)!='te':    
+            emptstr = ''
+            for i in text:
+                try:
+                    emptstr += letters[i.upper()]
+                except:
+                    pass
+            return emptstr
+    return text
 
 def typec_eng(text):
     pattern = r'\((.*?)\)'
@@ -225,8 +208,8 @@ def cast_var(string):
         return extracted_word
     
 def class_restructd(text1):
-    match = re.search(r'\^(.*?)6',text1)
-    data = match.group(1)+'6'
+    match = re.search(r'\^(.*?)$',text1)
+    data = match.group(1)+'$'
     matches = re.findall(r'\bclass\s+(\w+)', text1)
     text1 = text1.replace('^'+data,'^')
     match = re.search(r'function\s*(?:\([^)]*\))?\s*returning', text1)
@@ -247,6 +230,21 @@ def class_restructc(text):
     text= text.replace('pointer to member of class '+matches[0],'class '+variable(matches[0])+' member of pointer to',1)
     return text
 
+def arg_var(telugu_text):
+    if '(' in telugu_text:
+        type_w = typec_eng(telugu_text)
+        for i in range(len(type_w)):
+            word = type_w[i].strip()
+            if re.match(r'^[a-zA-Z0-9]+$', word):
+                r = transliterate_english_to_telugu(word)
+                type_w[i] = r
+            a = telugu_text.split('(')
+            if len(a) == 2:
+                b = a[1].split(')')
+            telugu_text = a[0]+'('+','.join(type_w)+')'+b[1]
+        return telugu_text
+    else:
+        return telugu_text
 # x = input("enter the string:")
 # # print("translated string:"+transt(x))
 # a,b=transt(x)

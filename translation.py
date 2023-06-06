@@ -87,7 +87,6 @@ def transt(text):
         text = declare_restruct(text)
         if re.search(r'pointer to member of class', text):
             text = class_restructd(text1)
-    
     if sen_list[-1] == 'cast':
         text = cast_restruct(text)
         var = cast_var(text)
@@ -128,13 +127,14 @@ def replace_words_with_values(string, dictionary):
 
 
 def transt1(text):
-    text = re.sub(r'$ 3', 'గా', text)
-    text = re.sub(r'$ ', 'కి ', text)
-    text = re.sub(r'$  ', 'కి ', text)
+    text = re.sub(r'\$ 3', 'గా', text)
+    text = re.sub(r'\$ ', 'కి ', text)
+    text = re.sub(r'\$  ', 'కి ', text)
     text = re.sub(r'కి  3', 'గా', text)
     text = re.sub(r'కి  శ్రేణి', ' యొక్క శ్రేణి', text)
     text = re.sub(r'కి శ్రేణి', ' యొక్క శ్రేణి', text)
     telugu_text = replace_words_with_values(text, data_type)
+    print(telugu_text)
     return telugu_text
 
 
@@ -143,7 +143,7 @@ def eng_find(text):
     eng_txt = ''
     try:
         for i in splt:
-            if re.search(r'\b[a-zA-Z]+\d+\b', i):
+            if re.search(r'\b[a-zA-Z0-9]+\b', i):
                 eng_txt = i[:-1]
     except:
         pass
@@ -158,8 +158,12 @@ def eng_find(text):
 
 def transliterate_english_to_telugu(text):
     if len(text) > 2:
-        text = transliterate_text(text, lang_code='te')
-        print(text)
+        match = re.search(r'\d+', text)
+        num = ''
+        if match:
+            num = match.group(0)
+            text = re.sub(r'\d+', '', text)
+        text = transliterate_text(text, lang_code='te')+num
     if detect(text)!='te':    
             emptstr = ''
             for i in text:
@@ -208,7 +212,7 @@ def cast_var(string):
         return extracted_word
     
 def class_restructd(text1):
-    match = re.search(r'\^(.*?)$',text1)
+    match = re.search(r'\^(.*?)\$',text1)
     data = match.group(1)+'$'
     matches = re.findall(r'\bclass\s+(\w+)', text1)
     text1 = text1.replace('^'+data,'^')
@@ -238,10 +242,9 @@ def arg_var(telugu_text):
             if re.match(r'^[a-zA-Z0-9]+$', word):
                 r = transliterate_english_to_telugu(word)
                 type_w[i] = r
-            a = telugu_text.split('(')
-            if len(a) == 2:
-                b = a[1].split(')')
-            telugu_text = a[0]+'('+','.join(type_w)+')'+b[1]
+        a = telugu_text.split('(')
+        b = a[1].split(')')
+        telugu_text = a[0]+'('+','.join(type_w)+')'+b[1]
         return telugu_text
     else:
         return telugu_text

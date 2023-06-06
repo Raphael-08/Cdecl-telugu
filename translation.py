@@ -35,12 +35,6 @@ data_type = {
     "char": "చార్", "int": "పూర్ణం", "short": "చిన్నది",
     "long": "పెద్దది", "float": "ఫ్లోట్", "double": "డబల్",
     "void": "ఖాళీ", "unsigned": "సానుకూల సంఖ్య", "signed": "ప్రతికూల సంఖ్య",
-  
-    "pointer to char": "చార్కి పాయింటర్", "pointer to int": "పూర్ణంకి పాయింటర్",
-    "pointer to short": "చిన్నదికి పాయింటర్", "pointer to long": "పెద్దదికి పాయింటర్",
-    "pointer to float": "ఫ్లోట్కి పాయింటర్", "pointer to double": "డబల్కి పాయింటర్",
-    "pointer to void": "ఖాళీకి పాయింటర్", "pointer to unsigned": "సానుకూల సంఖ్యకి పాయింటర్",
-    "pointer to signed": "ప్రతికూల సంఖ్యకి పాయింటర్", "args": "ఆర్గ్స్",
 
     "auto2": "ఆటో", "extern2": "ఎక్స్టర్న్‌ ",
     "static2": "స్టాటిక్‌", "register2": "రిజిస్టర్‌",
@@ -55,9 +49,10 @@ data_type = {
     "pointer to 7": " పాయింటర్లోకి",
     " pointer to  7": " పాయింటర్లోకి",
     "pointer to 3": "పాయింటర్గా",
+    "pointer to": "పాయింటర్కి",
+    "pointer":"పాయింటర్",
     "reference to 3": "రెఫరెన్స్‌గా",
     "reference to": "రెఫరెన్స్‌కి",
-    "pointer to": "పాయింటర్కి",
     "member of":"యొక్క మెంబర్‌కి",
     "array of 3": "శ్రేణిగా",
     "array ": " శ్రేణి ",
@@ -79,8 +74,9 @@ data_type = {
 
 
 def transt(text):
+    text = args_restruct(text)
     text1 = text
-    args_file(text)
+    print(text)
     if text == "syntax error":
         return data_type[text]
 
@@ -250,12 +246,44 @@ def arg_var(telugu_text):
     else:
         return telugu_text
 
-def args_file(text):
+def args_restruct(text):
     list1 = ''
     list2 = ''
     if '(' in text:
         list1 = text.split('(')
         if len(list1)==2:
             list2 = list1[1].split(')')
-        with open("output.txt","a") as f:
-            f.write(list2[0]+"\n")
+            splt = list2[0].split(',')
+            for i in range(len(splt)):    
+                text = data = func = ""
+                data_pattern = r"\bto\s(?!.*\bto\b)(.*)$"
+                func_pattern = r"function returning"
+                data_pattern1 = r"\bof\s(?!.*\bto\b)(.*)$"
+                match = re.search(data_pattern, splt[i])
+                if match:
+                    result = match.group()
+                    text = re.sub(data_pattern, "", splt[i])
+                    data = " ".join(result.split()[1:]) + "$"
+                else:
+                    match = re.search(data_pattern1, splt[i])
+                    if match:
+                        result = match.group()
+                        text = re.sub(data_pattern1, "", splt[i])
+                        data = " ".join(result.split()[1:]) + "$"
+
+                match1 = re.search(func_pattern, splt[i])
+                if match1:
+                    result = match1.group()
+                    func = result
+                    text = re.sub(func_pattern, func + " " + data, text)
+                else:
+                    text = data + " " + text
+
+                if text == '' or text == ' ':
+                    text = splt[i]
+
+                splt[i] = text.strip()
+            
+            return list1[0]+'('+','.join(splt)+')'+list2[1]
+    else:
+        return text

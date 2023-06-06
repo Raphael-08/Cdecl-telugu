@@ -20,6 +20,10 @@ data_type = {
     "long$ 3": "పెద్దదిగా", "float$ 3": "ఫ్లోట్గా", "double$ 3": "డబల్గా",
     "void$ 3": "ఖాళీగా", "unsigned$ 3": "సానుకూల సంఖ్యగా", "signed$ 3": "ప్రతికూల సంఖ్యగా",
 
+    "char$  3": "చార్గా", "int$  3": "పూర్ణంగా", "short$  3": "చిన్నదిగా",
+    "long$  3": "పెద్దదిగా", "float$  3": "ఫ్లోట్గా", "double$  3": "డబల్గా",
+    "void$  3": "ఖాళీగా", "unsigned$  3": "సానుకూల సంఖ్యగా", "signed$  3": "ప్రతికూల సంఖ్యగా",
+    
     "char$ ": "చార్కి ", "int$ ": "పూర్ణంకి ", "short$ ": "చిన్నదికి ",
     "long$ ": "పెద్దదికి ", "float$ ": "ఫ్లోట్కి ", "double$ ": "డబల్కి ",
     "void$ ": "ఖాళీకి ", "unsigned$ ": "సానుకూల సంఖ్యకి ", "signed$ ": "ప్రతికూల సంఖ్యకి ",
@@ -76,6 +80,7 @@ data_type = {
 
 def transt(text):
     text1 = text
+    args_file(text)
     if text == "syntax error":
         return data_type[text]
 
@@ -86,7 +91,7 @@ def transt(text):
         text = declare_restruct(text)
         if re.search(r'pointer to member of class', text):
             text = class_restructd(text1)
-    print(text)
+    
     if sen_list[-1] == 'cast':
         text = cast_restruct(text)
         var = cast_var(text)
@@ -97,7 +102,6 @@ def transt(text):
         var = sen_list[-2]
     
     telugu_text = replace_words_with_values(text, data_type)
-    print(telugu_text)
 
     telugu_text = arg_var(telugu_text)
 
@@ -245,9 +249,13 @@ def arg_var(telugu_text):
         return telugu_text
     else:
         return telugu_text
-# x = input("enter the string:")
-# # print("translated string:"+transt(x))
-# a,b=transt(x)
 
-# with open("output.txt","a") as f:
-#     f.write(a+"\n"+b+"\n")
+def args_file(text):
+    list1 = ''
+    list2 = ''
+    if '(' in text:
+        list1 = text.split('(')
+        if len(list1)==2:
+            list2 = list1[1].split(')')
+        with open("output.txt","a") as f:
+            f.write(list2[0]+"\n")

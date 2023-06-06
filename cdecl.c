@@ -969,7 +969,7 @@ void dodexplain(storage, constvol1, constvol2, type, decl) char *storage,
     (void)printf("%s4 ", constvol1);
   if (*constvol2)
     (void)printf("%s5 ", constvol2);
-  (void)printf("%s6 ", type ? type : "int");
+  (void)printf("%s$ ", type ? type : "int");
   (void)printf("%s3 ", decl);
   (void)printf("declare\n");
 }

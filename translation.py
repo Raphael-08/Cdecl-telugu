@@ -1,5 +1,4 @@
 from google.transliteration import transliterate_text
-from langdetect import detect
 import unicodedata
 import re
 

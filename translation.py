@@ -13,6 +13,8 @@ letters = {
     "Y": "వై", "Z": "జెడ్",
     '0': '0','1': '1', '2': '2','3': '3', '4': '4', 
     '5': '5', '6': '6', '7': '7', '8': '8','9': '9',
+    '౦': '0','౧': '1', '౨': '2','౩': '3', '౪': '4', 
+    '౫': '5', '౬': '6', '౭': '7', '౮': '8','౯': '9',
     '_': '_'
 }
 
@@ -128,7 +130,6 @@ def variable(text):
         emptstr = ''
         for i in text:
             emptstr += letters[i.upper()]
-        print(emptstr)
         return emptstr
 
 
@@ -162,22 +163,10 @@ def user_def_var(text):
         for i in matches2:
             text = text.replace(i,variable(i))
     matches3 = re.findall(r'\bక్లాస్‌\s+(\w+)',text)
-    print(text)
-    print(matches3)
     if matches3:
         for i in matches3:
             text = text.replace(i,variable(i))
     return text
-
-def convert_telugu_numerals(string):
-    result = ''
-    for char in string:
-        if unicodedata.category(char) == 'Lo':
-            digit = unicodedata.digit(char)
-            result += str(digit)
-        else:
-            result += char
-    return result
 
 def typec_eng(text):
     pattern = r'\((.*?)\)'

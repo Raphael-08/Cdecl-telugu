@@ -1,7 +1,5 @@
 from google.transliteration import transliterate_text
-import unicodedata
 import re
-
 
 letters = {
     "A": "ఏ", "B": "బీ", "C": "సీ", "D": "డీ",
@@ -26,6 +24,14 @@ data_type = {
     "char$  3": "చార్గా", "int$  3": "పూర్ణంగా", "short$  3": "చిన్నదిగా",
     "long$  3": "పెద్దదిగా", "float$  3": "ఫ్లోట్గా", "double$  3": "డబల్గా",
     "void$  3": "ఖాళీగా", "unsigned$  3": "సానుకూల సంఖ్యగా", "signed$  3": "ప్రతికూల సంఖ్యగా",
+
+    "char$ 7": "చార్లోకి", "int$ 7": "పూర్ణంలోకి", "short$ 7": "చిన్నదిలోకి",
+    "long$ 7": "పెద్దదిలోకి", "float$ 7": "ఫ్లోట్లోకి", "double$ 7": "డబల్లోకి",
+    "void$ 7": "ఖాళీలోకి", "unsigned$ 7": "సానుకూల సంఖ్యలోకి", "signed$ 7": "ప్రతికూల సంఖ్యలోకి",
+
+    "char$  7": "చార్లోకి", "int$  7": "పూర్ణంలోకి", "short$  7": "చిన్నదిలోకి",
+    "long$  7": "పెద్దదిలోకి", "float$  7": "ఫ్లోట్లోకి", "double$  7": "డబల్లోకి",
+    "void$  7": "ఖాళీలోకి", "unsigned$  7": "సానుకూల సంఖ్యలోకి", "signed$  7": "ప్రతికూల సంఖ్యలోకి",
     
     "char$ ": "చార్కి ", "int$ ": "పూర్ణంకి ", "short$ ": "చిన్నదికి ",
     "long$ ": "పెద్దదికి ", "float$ ": "ఫ్లోట్కి ", "double$ ": "డబల్కి ",
@@ -44,7 +50,6 @@ data_type = {
 
     "volatile": "వోలటైల్‌", "volatile4": "వోలటైల్‌", "volatile5": "వోలటైల్",
     "const": "స్థిరమైన", "const4": "స్థిరమైన", "const5": "స్థిరమైన",
-
     " as1": "ను",
     " 0into4 ": "ను ",
     "declare": "ప్రకటించండి",
@@ -66,6 +71,7 @@ data_type = {
     "syntax error": "సింటాక్స్ లోపం",
     "bad character": "చెడు అక్షరం",
 
+    "block": "బ్లాక్",
     " var": " వార్‌",
     "enum": "ఇనమ్‌",
     "union": "యూనియన్",
@@ -77,13 +83,13 @@ data_type = {
 
 
 def transt(text):
+    print(text)
     if text == "syntax error":
         return data_type[text]
     if 'bad character' in text:
         return('సింటాక్స్ లోపం చెడు అక్షరం '+text[-3:])
     text = args_restruct(text)
     text1 = text
-    print(text)
 
     sen_list = text.split()
     var = sen_list[0]
@@ -101,14 +107,13 @@ def transt(text):
     if sen_list[-1] == "var":
         var = sen_list[-2]
     
+    print(text)
+
     telugu_text = replace_words_with_values(text, data_type)
-    print(telugu_text)
 
     telugu_text = user_def_var(telugu_text)
-    print(telugu_text)
 
     telugu_text = arg_var(telugu_text)
-    print(telugu_text)
 
     telugu_text = telugu_text.replace(var, variable(var), 1)
 
@@ -131,7 +136,6 @@ def variable(text):
         for i in text:
             emptstr += letters[i.upper()]
         return emptstr
-
 
 def replace_words_with_values(string, dictionary):
     pattern = re.compile(r'\b({})\b'.format(
@@ -173,17 +177,21 @@ def typec_eng(text):
     matches = re.findall(pattern, text)
     return matches[0].split(',')
 
-
 def cast_restruct(string):
-    pattern = r'function\s*(?:\([^)]*\))?\s*returning'
+    pattern = r'block\s*(?:\([^)]*\))?\s*returning'
+    pattern1 = r'function\s*(?:\([^)]*\))?\s*returning'
     match = re.search(pattern, string)
+    match1 = re.search(pattern1, string)
     if match:
         extracted_string = match.group(0)
         updated_string = re.sub(pattern, '', string)
         return extracted_string+" "+updated_string
+    elif match1:
+        extracted_string = match1.group(0)
+        updated_string = re.sub(pattern1, '', string)
+        return extracted_string+" "+updated_string
     else:
         return string
-
 
 def declare_restruct(string):
     pattern = r'function\s*(?:\([^)]*\))?\s*returning'

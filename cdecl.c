@@ -984,7 +984,7 @@ void docexplain(constvol, type, cast, name) char *constvol, *type, *cast, *name;
   }
   if (strlen(constvol) > 0)
     (void)printf("%s1 ", constvol);
-  (void)printf("%s6 ", type);
+  (void)printf("%s$ ", type);
   (void)printf("%s7 ", cast);
   (void)printf("%s 0into4 ", name);
   (void)printf("cast\n");

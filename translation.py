@@ -1,5 +1,6 @@
-from langdetect import detect
 from google.transliteration import transliterate_text
+from langdetect import detect
+import unicodedata
 import re
 
 
@@ -9,10 +10,13 @@ letters = {
     "I": "ఐ", "J": "జే", "K": "కే", "L": "ఎల్",
     "M": "ఎం", "N": "ఎన్", "O": "ఓ", "P": "పీ",
     "Q": "క్యూ", "R": "ఆర్", "S": "ఎస్", "T": "టీ",
-                 "U": "యూ", "V": "వీ", "W": "డబల్యూ", "X": "ఎక్స్",
-                 "Y": "వై", "Z": "జెడ్", '0': '0', '1': '1', '2': '2',
-                 '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8',
-                 '9': '9', '_': '_'
+    "U": "యూ", "V": "వీ", "W": "డబల్యూ", "X": "ఎక్స్",
+    "Y": "వై", "Z": "జెడ్",
+    '0': '0','1': '1', '2': '2','3': '3', '4': '4', 
+    '5': '5', '6': '6', '7': '7', '8': '8','9': '9',
+    '౦': '0','౧': '1', '౨': '2','౩': '3', '౪': '4', 
+    '౫': '5', '౬': '6', '౭': '7', '౮': '8','౯': '9',
+    '_': '_'
 }
 
 data_type = {
@@ -47,7 +51,7 @@ data_type = {
     "declare": "ప్రకటించండి",
     "cast": "ప్రసారం చేయండి",
     "pointer to 7": " పాయింటర్లోకి",
-    " pointer to  7": " పాయింటర్లోకి",
+    "pointer to  7": " పాయింటర్లోకి",
     "pointer to 3": "పాయింటర్గా",
     "pointer to": "పాయింటర్కి",
     "pointer":"పాయింటర్",
@@ -74,11 +78,13 @@ data_type = {
 
 
 def transt(text):
+    if text == "syntax error":
+        return data_type[text]
+    if 'bad character' in text:
+        return('సింటాక్స్ లోపం చెడు అక్షరం '+text[-3:])
     text = args_restruct(text)
     text1 = text
     print(text)
-    if text == "syntax error":
-        return data_type[text]
 
     sen_list = text.split()
     var = sen_list[0]
@@ -97,26 +103,36 @@ def transt(text):
         var = sen_list[-2]
     
     telugu_text = replace_words_with_values(text, data_type)
+    print(telugu_text)
+
+    telugu_text = user_def_var(telugu_text)
+    print(telugu_text)
 
     telugu_text = arg_var(telugu_text)
+    print(telugu_text)
 
     telugu_text = telugu_text.replace(var, variable(var), 1)
 
-    try:
-        eng_w = eng_find(telugu_text)
-        telugu_text = telugu_text.replace(eng_w, variable(eng_w))
-    except:
-        pass
     telugu_text = transt1(telugu_text)
+
     return telugu_text
 
-
-def variable(tv):
-    if detect(tv) != 'te':
-        tv = transliterate_english_to_telugu(tv)
-        return tv
+def variable(text):
+    result = ''
+    if len(text) > 3:
+        text = transliterate_text(text, lang_code='te')
+        for char in text:
+            if char in letters:
+                result += letters[char]
+            else:
+                result += char
+        return result
     else:
-        return tv
+        emptstr = ''
+        for i in text:
+            emptstr += letters[i.upper()]
+        print(emptstr)
+        return emptstr
 
 
 def replace_words_with_values(string, dictionary):
@@ -124,7 +140,6 @@ def replace_words_with_values(string, dictionary):
         '|'.join(map(re.escape, dictionary.keys()))))
     replaced_string = pattern.sub(lambda x: dictionary[x.group()], string)
     return replaced_string
-
 
 def transt1(text):
     text = re.sub(r'\$ 3', 'గా', text)
@@ -134,45 +149,38 @@ def transt1(text):
     text = re.sub(r'కి  శ్రేణి', ' యొక్క శ్రేణి', text)
     text = re.sub(r'కి శ్రేణి', ' యొక్క శ్రేణి', text)
     telugu_text = replace_words_with_values(text, data_type)
-    print(telugu_text)
     return telugu_text
 
-
-def eng_find(text):
-    splt = text.split()
-    eng_txt = ''
-    try:
-        for i in splt:
-            if re.search(r'\b[a-zA-Z0-9]+\b', i):
-                eng_txt = i[:-1]
-    except:
-        pass
-    if eng_txt == '':
-        for i in text:
-            if i == ' ' or i.isnumeric():
-                continue
-            if detect(i) != 'te':
-                eng_txt += i
-    return eng_txt
-
-
-def transliterate_english_to_telugu(text):
-    if len(text) > 2:
-        match = re.search(r'\d+', text)
-        num = ''
-        if match:
-            num = match.group(0)
-            text = re.sub(r'\d+', '', text)
-        text = transliterate_text(text, lang_code='te')+num
-    if detect(text)!='te':    
-            emptstr = ''
-            for i in text:
-                try:
-                    emptstr += letters[i.upper()]
-                except:
-                    pass
-            return emptstr
+def user_def_var(text):
+    matches = re.findall(r'\bనిర్మాణం\s+(\w+)',text)
+    if matches:
+        for i in matches:
+            text = text.replace(i,variable(i))
+    matches1 = re.findall(r'\bయూనియన్\s+(\w+)',text)
+    if matches1:
+        for i in matches1:
+            text = text.replace(i,variable(i))
+    matches2 = re.findall(r'\bఇనమ్‌\s+(\w+)',text)
+    if matches2:
+        for i in matches2:
+            text = text.replace(i,variable(i))
+    matches3 = re.findall(r'\bక్లాస్‌\s+(\w+)',text)
+    print(text)
+    print(matches3)
+    if matches3:
+        for i in matches3:
+            text = text.replace(i,variable(i))
     return text
+
+def convert_telugu_numerals(string):
+    result = ''
+    for char in string:
+        if unicodedata.category(char) == 'Lo':
+            digit = unicodedata.digit(char)
+            result += str(digit)
+        else:
+            result += char
+    return result
 
 def typec_eng(text):
     pattern = r'\((.*?)\)'
@@ -221,17 +229,17 @@ def class_restructd(text1):
         extracted_string = match.group(0)
         updated_string = re.sub(r'function\s*(?:\([^)]*\))?\s*returning', '##', text1)
         text1 = updated_string.replace('##',extracted_string+' '+data)
-        text1= text1.replace('pointer to member of class '+matches[-1],'class '+variable(matches[-1])+' member of pointer to',1)
+        text1= text1.replace('pointer to member of class '+matches[-1],'class '+matches[-1]+' member of pointer to',1)
         return text1.replace('^ ','')
     else:
         sp = text1.split(matches[-1])
         text1= sp[0]+matches[-1]+' '+data+sp[-1]
-        text1= text1.replace('pointer to member of class '+matches[-1],'class '+variable(matches[-1])+' member of pointer to',1)
+        text1= text1.replace('pointer to member of class '+matches[-1],'class '+matches[-1]+' member of pointer to',1)
         return text1.replace('^ ','')
 
 def class_restructc(text):
     matches = re.findall(r'\bclass\s+(\w+)', text)
-    text= text.replace('pointer to member of class '+matches[0],'class '+variable(matches[0])+' member of pointer to',1)
+    text= text.replace('pointer to member of class '+matches[0],'class '+matches[0]+' member of pointer to',1)
     return text
 
 def arg_var(telugu_text):
@@ -240,7 +248,7 @@ def arg_var(telugu_text):
         for i in range(len(type_w)):
             word = type_w[i].strip()
             if re.match(r'^[a-zA-Z0-9]+$', word):
-                r = transliterate_english_to_telugu(word)
+                r = variable(word)
                 type_w[i] = r
         a = telugu_text.split('(')
         b = a[1].split(')')

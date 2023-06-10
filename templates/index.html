@@ -33,18 +33,69 @@
             </script>
               
             <style type="text/css">
+                @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:200');
                 center{
                         text-align:center;
                     }
+                
 
-                body {
-                    background-image: url('https://img.freepik.com/free-photo/abstract-digital-grid-black-background_53876-97647.jpg');
+                body  {
+                    background-image: url('https://static.pexels.com/photos/414171/pexels-photo-414171.jpeg');
+                background-size:cover;
+                        -webkit-animation: slidein 100s;
+                        animation: slidein 100s;
+
+                        -webkit-animation-fill-mode: forwards;
+                        animation-fill-mode: forwards;
+
+                        -webkit-animation-iteration-count: infinite;
+                        animation-iteration-count: infinite;
+
+                        -webkit-animation-direction: alternate;
+                        animation-direction: alternate;              
+                }
+
+                @-webkit-keyframes slidein {
+                from {background-position: top; background-size:3000px; }
+                to {background-position: -100px 0px;background-size:2750px;}
+                }
+
+                @keyframes slidein {
+                from {background-position: top;background-size:3000px; }
+                to {background-position: -100px 0px;background-size:2750px;}
+
+                }
+
+
+
+                .center
+                {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                margin: auto;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background: rgba(75, 75, 250, 0.3);
+                border-radius: 3px;
+                }
+                .center h1{
+                text-align:center;
+                color:white;
+                font-family: 'Source Code Pro', monospace;
+                text-transform:uppercase;
+                }
+
+                /* body {
                     background-repeat: no-repeat;
                     background-size: cover;
                     background-color:black;
                     margin: 0px;
                     color: #99b8bd;
-                }
+                } */
         
                 #dark,
                 #dark_top {
@@ -143,8 +194,8 @@
                     height: 32px;
                     margin: 4px;
                     border-radius: 50%;
-                    border: 3px solid #fff;
-                    border-color: #fff transparent #fff transparent;
+                    border: 3px solid #5f5959;
+                    border-color: #1d1c1c transparent #7e6262 transparent;
                     animation: lds-dual-ring 1.2s linear infinite;
                 }
                 @keyframes lds-dual-ring {
@@ -163,7 +214,7 @@
         <body>
     
             <div id="vert_spacer">&nbsp;</div>
-            <div id="title">
+            <div id="title",class='center'>
                 <h1>cdecl</h1>
                 <h2>C gibberish <span class="arrow">&rarr;</span> Telugu</h2>
                     <input id = "query" class = "searcher" name = "query"  value="" autocomplete="off">
@@ -171,7 +222,7 @@
                     </div>
                 <div class = "text_result" id="output"></div>
                 
-        </div>
+            </div>
     
     </body>
     </html>

@@ -138,7 +138,7 @@ data_type = {
     "reference to": "రెఫరెన్స్‌కి",
     "member of": "యొక్క మెంబర్‌కి",
     "array of 3": "శ్రేణిగా",
-    "array ": " శ్రేణి ",
+    "array": " శ్రేణి",
     " of 3 ": " గా ",
     "of": "కి",
     "returning": "రిటర్నింగ్‌",
@@ -169,16 +169,17 @@ def preprocess_text(text):
         var = cast_var(text)
         if re.search(r"pointer to member of class", text):
             text = class_restructc(text)
-    if sen_list[-1] == "var":
-        var = sen_list[-2]
     return text, var
 
 
 def translate_text(text, var):
     telugu_text = replace_words_with_values(text, data_type)
-    telugu_text = user_def_var(telugu_text)
     telugu_text = arg_var(telugu_text)
-    telugu_text = telugu_text.replace(var, variable(var), 1)
+    if telugu_text.endswith(data_type["cast"]):
+        telugu_text = replace_last_occurrence(telugu_text, var, variable(var))
+    else:
+        telugu_text = telugu_text.replace(var, variable(var), 1)
+    telugu_text = user_def_var(telugu_text)
     telugu_text = transt1(telugu_text)
     return telugu_text
 
@@ -206,7 +207,7 @@ def args_restruct(text):
         if len(list1) == 2:
             list2 = list1[1].split(")")
             splt = list2[0].split(",")
-            for index,arg in enumerate(splt):
+            for index, arg in enumerate(splt):
                 text = data = func = ""
                 data_pattern = r"\bto\s(?!.*\bto\b)(.*)$"
                 func_pattern = r"function returning"
@@ -231,7 +232,7 @@ def args_restruct(text):
                 else:
                     text = data + " " + text
 
-                if text in (""," "):
+                if text in ("", " "):
                     text = splt[index]
 
                 splt[index] = text.strip()
@@ -271,7 +272,7 @@ def cast_restruct(string):
 def cast_var(string):
     pattern = r"7\s+(\w+)\s+0"
     match = re.search(pattern, string)
-    extracted_word=''
+    extracted_word = ""
     if match:
         extracted_word = match.group(1)
     return extracted_word
@@ -299,7 +300,7 @@ def class_restructd(text1):
         "pointer to member of class " + matches[-1],
         "class " + matches[-1] + " member of pointer to",
         1,
-        )
+    )
     return text1.replace("^ ", "")
 
 
@@ -317,9 +318,7 @@ def class_restructc(text):
 
 
 def replace_words_with_values(string, dictionary):
-    pattern = re.compile(
-        rf"\b({'|'.join(map(re.escape, dictionary.keys()))})\b"
-    )
+    pattern = re.compile(rf"\b({'|'.join(map(re.escape, dictionary.keys()))})\b")
     replaced_string = pattern.sub(lambda x: dictionary[x.group()], string)
     return replaced_string
 
@@ -328,19 +327,19 @@ def user_def_var(text):
     matches = re.findall(r"\bస్ట్రక్ట్‌\s+(\w+)", text)
     if matches:
         for i in matches:
-            text = text.replace(i, variable(i))
+            text = text.replace(f"స్ట్రక్ట్‌ {i}", f"స్ట్రక్ట్‌ {variable(i)}", 1)
     matches1 = re.findall(r"\bయూనియన్\s+(\w+)", text)
     if matches1:
         for i in matches1:
-            text = text.replace(i, variable(i))
+            text = text.replace(f"యూనియన్ {i}", f"యూనియన్ {variable(i)}", 1)
     matches2 = re.findall(r"\bఇనమ్‌\s+(\w+)", text)
     if matches2:
         for i in matches2:
-            text = text.replace(i, variable(i))
+            text = text.replace(f"ఇనమ్‌ {i}", f"ఇనమ్‌ {variable(i)}", 1)
     matches3 = re.findall(r"\bక్లాస్‌\s+(\w+)", text)
     if matches3:
         for i in matches3:
-            text = text.replace(i, variable(i))
+            text = text.replace(f"క్లాస్‌ {i}", f"క్లాస్‌ {variable(i)}", 1)
     return text
 
 
@@ -353,7 +352,7 @@ def typec_eng(text):
 def arg_var(telugu_text):
     if "(" in telugu_text:
         type_w = typec_eng(telugu_text)
-        for index,arg in enumerate(type_w):
+        for index, arg in enumerate(type_w):
             word = arg.strip()
             if re.match(r"^[a-zA-Z0-9]+$", word):
                 transliterated_word = variable(word)
@@ -363,6 +362,12 @@ def arg_var(telugu_text):
         telugu_text = left[0] + "(" + ",".join(type_w) + ")" + right[1]
         return telugu_text
     return telugu_text
+
+
+def replace_last_occurrence(text, old_word, new_word):
+    words = text.rsplit(old_word, 1)
+    replaced_text = new_word.join(words)
+    return replaced_text
 
 
 def variable(text):

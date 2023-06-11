@@ -245,15 +245,8 @@ def declare_restruct(string):
     match = re.findall(pattern, string)
     match1 = re.search(r"\^(.*?)\$", string)
     if match:
-        print(match)
-        updated_string = string.replace(match[-1],"##")
-        updated_string = updated_string.replace(match1.group()[1:], "")
-        print(match1.group()[1:])
-        print(updated_string)
-        # updated_string = updated_string.split("^")
-        # return updated_string[0] + " ".join(match) + " " + updated_string[1]
-        string = updated_string.replace("##",f"{match[-1]} {match1.group()[1:]}")
-        print(string)
+        updated_string = string.replace(match1.group()[1:], "",1)
+        string = replace_last_occurrence(updated_string,match[-1],f"{match[-1]} {match1.group()[1:]}")
     text = string.split("^")
     return text[0] + " " + text[1]
 

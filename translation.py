@@ -199,56 +199,54 @@ def transt(text):
 # ----------------------preprocess functions
 
 
-def args_restruct(text):
-    list1 = ""
-    list2 = ""
-    if "(" in text:
-        list1 = text.split("(")
-        if len(list1) == 2:
-            list2 = list1[1].split(")")
-            splt = list2[0].split(",")
-            for index, arg in enumerate(splt):
-                text = data = func = ""
-                data_pattern = r"\bto\s(?!.*\bto\b)(.*)$"
-                func_pattern = r"function returning"
-                data_pattern1 = r"\bof\s(?!.*\bto\b)(.*)$"
-                match = re.search(data_pattern, arg)
-                if match:
-                    result = match.group()
-                    text = re.sub(data_pattern, "", arg)
-                    data = " ".join(result.split()[1:]) + "$"
-                else:
-                    match = re.search(data_pattern1, arg)
+def args_restruct(text1):
+    if "(" in text1:
+        list1 = list2 = ""
+        pattern = r"function\s*(?:\([^)]*\))?\s*returning"
+        matches = re.findall(pattern,text1)
+        for index,word in enumerate(matches):
+            list1 = word.split("(")
+            if len(list1) == 2:
+                list2 = list1[1].split(")")
+                splt = list2[0].split(",")
+                for index1, arg in enumerate(splt):
+                    text = data = func = ""
+                    data_pattern = r"\bto\s(?!.*\bto\b)(.*)$"
+                    func_pattern = r"function returning"
+                    data_pattern1 = r"\bof\s(?!.*\bto\b)(.*)$"
+                    match = re.search(data_pattern, arg)
                     if match:
                         result = match.group()
-                        text = re.sub(data_pattern1, "", arg)
+                        text = re.sub(data_pattern, "", arg)
                         data = " ".join(result.split()[1:]) + "$"
+                    else:
+                        match = re.search(data_pattern1, arg)
+                        if match:
+                            result = match.group()
+                            text = re.sub(data_pattern1, "", arg)
+                            data = " ".join(result.split()[1:]) + "$"
 
-                match1 = re.search(func_pattern, arg)
-                if match1:
-                    result = match1.group()
-                    func = result
-                    text = re.sub(func_pattern, func + " " + data, text)
-                else:
-                    text = data + " " + text
-
-                if text in ("", " "):
-                    text = splt[index]
-
-                splt[index] = text.strip()
-
-            return list1[0] + "(" + ",".join(splt) + ")" + list2[1]
-    return text
+                    match1 = re.search(func_pattern, arg)
+                    if match1:
+                        result = match1.group()
+                        func = result
+                        text = re.sub(func_pattern, func + " " + data, text)
+                    else:
+                        text = data + " " + text
+                    if text in ("", " "):
+                        text = splt[index1]
+                    splt[index1] = text.strip()
+                text1 = text1.replace(matches[index],list1[0] + "(" + ",".join(splt) + ")" + list2[1])
+    return text1
 
 
 def declare_restruct(string):
-    pattern = r"function\s*(?:\([^)]*\))?\s*returning"
-    match = re.search(pattern, string)
+    pattern = r"function\s*(?:\([^)]*\))?\s*returning "
+    match = re.findall(pattern, string)
     if match:
-        extracted_string = match.group(0)
         updated_string = re.sub(pattern, "", string)
         updated_string = updated_string.split("^")
-        return updated_string[0] + extracted_string + " " + updated_string[1]
+        return updated_string[0] + " ".join(match) + " " + updated_string[1]
     text = string.split("^")
     return text[0] + " " + text[1]
 
@@ -283,11 +281,10 @@ def class_restructd(text1):
     data = match.group(1) + "$"
     matches = re.findall(r"\bclass\s+(\w+)", text1)
     text1 = text1.replace("^" + data, "^")
-    match = re.search(r"function\s*(?:\([^)]*\))?\s*returning", text1)
+    match = re.findall(r"function\s*(?:\([^)]*\))?\s*returning", text1)
     if match:
-        extracted_string = match.group(0)
-        updated_string = re.sub(r"function\s*(?:\([^)]*\))?\s*returning", "##", text1)
-        text1 = updated_string.replace("##", extracted_string + " " + data)
+        updated_string = replace_last_occurrence(text1,match[-1],"##")
+        text1 = updated_string.replace("##", match[-1] + " " + data)
         text1 = text1.replace(
             "pointer to member of class " + matches[-1],
             "class " + matches[-1] + " member of pointer to",
@@ -344,23 +341,25 @@ def user_def_var(text):
 
 
 def typec_eng(text):
-    pattern = r"\((.*?)\)"
-    matches = re.findall(pattern, text)
-    return matches[0].split(",")
+    pattern = r'\((.*?)\)'
+    matches = re.search(pattern, text)
+    return matches.group(1).strip() if matches else None
 
 
 def arg_var(telugu_text):
     if "(" in telugu_text:
-        type_w = typec_eng(telugu_text)
-        for index, arg in enumerate(type_w):
-            word = arg.strip()
-            if re.match(r"^[a-zA-Z0-9]+$", word):
-                transliterated_word = variable(word)
-                type_w[index] = transliterated_word
-        left = telugu_text.split("(")
-        right = left[1].split(")")
-        telugu_text = left[0] + "(" + ",".join(type_w) + ")" + right[1]
-        return telugu_text
+        pattern = r"ఫంక్షన్\s*(?:\([^)]*\))?\s*రిటర్నింగ్‌"
+        matches = re.findall(pattern,telugu_text)
+        for index,fun in enumerate(matches):
+            type_w = typec_eng(fun)
+            if type_w:
+                splt = type_w.split(',')
+                for index1,args in enumerate(splt):
+                    word = args.strip()
+                    if re.match(r"^[a-zA-Z0-9]+$", word):
+                        transliterated_word = variable(word)
+                        splt[index1] = transliterated_word
+                telugu_text = telugu_text.replace(matches[index],f"ఫంక్షన్({','.join(splt)})రిటర్నింగ్",1)
     return telugu_text
 
 

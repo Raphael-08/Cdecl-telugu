@@ -241,12 +241,19 @@ def args_restruct(text1):
 
 
 def declare_restruct(string):
-    pattern = r"function\s*(?:\([^)]*\))?\s*returning "
+    pattern = r"function\s*(?:\([^)]*\))?\s*returning"
     match = re.findall(pattern, string)
+    match1 = re.search(r"\^(.*?)\$", string)
     if match:
-        updated_string = re.sub(pattern, "", string)
-        updated_string = updated_string.split("^")
-        return updated_string[0] + " ".join(match) + " " + updated_string[1]
+        print(match)
+        updated_string = string.replace(match[-1],"##")
+        updated_string = updated_string.replace(match1.group()[1:], "")
+        print(match1.group()[1:])
+        print(updated_string)
+        # updated_string = updated_string.split("^")
+        # return updated_string[0] + " ".join(match) + " " + updated_string[1]
+        string = updated_string.replace("##",f"{match[-1]} {match1.group()[1:]}")
+        print(string)
     text = string.split("^")
     return text[0] + " " + text[1]
 

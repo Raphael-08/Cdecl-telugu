@@ -203,8 +203,8 @@ def args_restruct(text1):
     if "(" in text1:
         list1 = list2 = ""
         pattern = r"function\s*(?:\([^)]*\))?\s*returning"
-        matches = re.findall(pattern,text1)
-        for index,word in enumerate(matches):
+        matches = re.findall(pattern, text1)
+        for index, word in enumerate(matches):
             list1 = word.split("(")
             if len(list1) == 2:
                 list2 = list1[1].split(")")
@@ -236,7 +236,9 @@ def args_restruct(text1):
                     if text in ("", " "):
                         text = splt[index1]
                     splt[index1] = text.strip()
-                text1 = text1.replace(matches[index],list1[0] + "(" + ",".join(splt) + ")" + list2[1])
+                text1 = text1.replace(
+                    matches[index], list1[0] + "(" + ",".join(splt) + ")" + list2[1]
+                )
     return text1
 
 
@@ -245,8 +247,10 @@ def declare_restruct(string):
     match = re.findall(pattern, string)
     match1 = re.search(r"\^(.*?)\$", string)
     if match:
-        updated_string = string.replace(match1.group()[1:], "",1)
-        string = replace_last_occurrence(updated_string,match[-1],f"{match[-1]} {match1.group()[1:]}")
+        updated_string = string.replace(match1.group()[1:], "", 1)
+        string = replace_last_occurrence(
+            updated_string, match[-1], f"{match[-1]} {match1.group()[1:]}"
+        )
     text = string.split("^")
     return text[0] + " " + text[1]
 
@@ -283,7 +287,7 @@ def class_restructd(text1):
     text1 = text1.replace("^" + data, "^")
     match = re.findall(r"function\s*(?:\([^)]*\))?\s*returning", text1)
     if match:
-        updated_string = replace_last_occurrence(text1,match[-1],"##")
+        updated_string = replace_last_occurrence(text1, match[-1], "##")
         text1 = updated_string.replace("##", match[-1] + " " + data)
         text1 = text1.replace(
             "pointer to member of class " + matches[-1],
@@ -341,7 +345,7 @@ def user_def_var(text):
 
 
 def typec_eng(text):
-    pattern = r'\((.*?)\)'
+    pattern = r"\((.*?)\)"
     matches = re.search(pattern, text)
     return matches.group(1).strip() if matches else None
 
@@ -349,17 +353,22 @@ def typec_eng(text):
 def arg_var(telugu_text):
     if "(" in telugu_text:
         pattern = r"ఫంక్షన్\s*(?:\([^)]*\))?\s*రిటర్నింగ్‌"
-        matches = re.findall(pattern,telugu_text)
-        for index,fun in enumerate(matches):
+        matches = re.findall(pattern, telugu_text)
+        pattern1 = r"బ్లాక్\s*(?:\([^)]*\))?\s*రిటర్నింగ్‌"
+        matches1 = re.findall(pattern1, telugu_text)
+        matches = matches + matches1
+        for index, fun in enumerate(matches):
             type_w = typec_eng(fun)
             if type_w:
-                splt = type_w.split(',')
-                for index1,args in enumerate(splt):
+                splt = type_w.split(",")
+                for index1, args in enumerate(splt):
                     word = args.strip()
                     if re.match(r"^[a-zA-Z0-9]+$", word):
                         transliterated_word = variable(word)
                         splt[index1] = transliterated_word
-                telugu_text = telugu_text.replace(matches[index],f"ఫంక్షన్({','.join(splt)})రిటర్నింగ్",1)
+                telugu_text = telugu_text.replace(
+                    matches[index], f"ఫంక్షన్({','.join(splt)})రిటర్నింగ్", 1
+                )
     return telugu_text
 
 

@@ -158,7 +158,6 @@ data_type = {
 
 def preprocess_text(text):
     text = args_restruct(text)
-    print(text)
     text1 = text
     sen_list = text.split()
     var = sen_list[0]
@@ -206,7 +205,6 @@ def args_restruct(text1):
         list1 = list2 = ""
         pattern = r"function\s*(?:\([^)]*\))?\s*returning | block\s*(?:\([^)]*\))?\s*returning"
         matches = re.findall(pattern, text1)
-        print(matches)
         for index, word in enumerate(matches):
             list1 = word.split("(")
             if len(list1) == 2:

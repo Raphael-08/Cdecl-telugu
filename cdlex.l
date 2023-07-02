@@ -10,28 +10,10 @@ A	[A-Z_a-z]
 AN	[0-9A-Z_a-z]
 
 %%
-array		return ARRAY;
-as		return AS;
-cast		return CAST;
 declare		return DECLARE;
 exit		return 0;
 explain		return EXPLAIN;
-function	return FUNCTION;
-func		return FUNCTION;
-block           return BLOCK;
-help		return HELP;
-into		return INTO;
-member		return MEMBER;
-of		return OF;
-pointer		return POINTER;
 quit		return 0;
-reference	return REFERENCE;
-ref		return REFERENCE;
-returning	return RETURNING;
-ret		return RETURNING;
-set		return SET;
-to		return TO;
-vector		return ARRAY;
 ::		return DOUBLECOLON;
 [?]		return HELP;
 [,]		return COMMA;

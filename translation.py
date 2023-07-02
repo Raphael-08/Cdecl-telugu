@@ -52,7 +52,7 @@ letters = {
 }
 
 data_type = {
-    "char$ 3": "చార్గా",
+    "char$ 3": "క్యార్‌గా",
     "int$ 3": "ఇంట్‌గా",
     "short$ 3": "షార్ట్గా",
     "long$ 3": "లాంగ్‌గా",
@@ -61,7 +61,7 @@ data_type = {
     "void$ 3": "వోయిడ్‌గా",
     "unsigned$ 3": "అన్సైండ్‌గా",
     "signed$ 3": "సైండ్‌గా",
-    "char$  3": "చార్గా",
+    "char$  3": "క్యార్‌గా",
     "int$  3": "ఇంట్‌గా",
     "short$  3": "షార్ట్గా",
     "long$  3": "లాంగ్‌గా",
@@ -70,7 +70,7 @@ data_type = {
     "void$  3": "వోయిడ్‌గా",
     "unsigned$  3": "అన్సైండ్‌గా",
     "signed$  3": "సైండ్‌గా",
-    "char$ 7": "చార్లోకి",
+    "char$ 7": "క్యార్‌లోకి",
     "int$ 7": "ఇంట్‌లోకి",
     "short$ 7": "షార్ట్లోకి",
     "long$ 7": "లాంగ్‌లోకి",
@@ -79,7 +79,7 @@ data_type = {
     "void$ 7": "వోయిడ్‌లోకి",
     "unsigned$ 7": "అన్సైండ్‌లోకి",
     "signed$ 7": "సైండ్‌లోకి",
-    "char$  7": "చార్లోకి",
+    "char$  7": "క్యార్‌లోకి",
     "int$  7": "ఇంట్‌లోకి",
     "short$  7": "షార్ట్లోకి",
     "long$  7": "లాంగ్‌లోకి",
@@ -88,7 +88,7 @@ data_type = {
     "void$  7": "వోయిడ్‌లోకి",
     "unsigned$  7": "అన్సైండ్‌లోకి",
     "signed$  7": "సైండ్‌లోకి",
-    "char$ ": "చార్కి ",
+    "char$ ": "క్యార్‌కి ",
     "int$ ": "ఇంట్‌కి ",
     "short$ ": "షార్ట్కి ",
     "long$ ": "లాంగ్‌కి ",
@@ -97,7 +97,7 @@ data_type = {
     "void$ ": "వోయిడ్‌కి ",
     "unsigned$ ": "అన్సైండ్‌కి ",
     "signed$ ": "సైండ్‌కి ",
-    "char$  ": "చార్కి ",
+    "char$  ": "క్యార్‌కి ",
     "int$  ": "ఇంట్‌కి ",
     "short$  ": "షార్ట్కి ",
     "long$  ": "లాంగ్‌కి ",
@@ -106,7 +106,7 @@ data_type = {
     "void$  ": "వోయిడ్‌కి ",
     "unsigned$  ": "అన్సైండ్‌కి  ",
     "signed$  ": "సైండ్‌కి ",
-    "char": "చార్",
+    "char": "క్యార్‌",
     "int": "ఇంట్‌",
     "short": "షార్ట్",
     "long": "లాంగ్‌",
@@ -139,21 +139,39 @@ data_type = {
     "reference": "రెఫరెన్స్‌",
     "member of": "యొక్క మెంబర్‌కి",
     "array of 3": "శ్రేణిగా",
-    "array": " శ్రేణి",
+    "array": "శ్రేణి",
     " of 3 ": " గా ",
-    "of": "కి",
+    " of": " కి",
     "returning": "రిటర్నింగ్‌",
     "function": "ఫంక్షన్",
     "syntax error": "సింటాక్స్ లోపం",
     "bad character": "చెడు అక్షరం",
     "block": "బ్లాక్",
-    " var": " వార్‌",
+    " var": " వ్యార్‌",
     "enum": "ఇనమ్‌",
     "union": "యూనియన్",
     "struct": "స్ట్రక్ట్‌",
     "class": "క్లాస్‌",
+    "bad character": "చెడు అక్షరం",
     "": "",
 }
+
+keywords = (
+    "break",
+    "case",
+    "continue",
+    "default",
+    "do",
+    "else",
+    "for",
+    "goto",
+    "if",
+    "return",
+    "sizeof",
+    "switch",
+    "typedef",
+    "while",
+)
 
 
 def preprocess_text(text):
@@ -189,9 +207,13 @@ def transt(text):
     if text == "syntax error":
         return data_type[text]
     if "bad character" in text:
-        return f"సింటాక్స్ లోపం చెడు అక్షరం {text[-3:]}"
+        return (
+            f"{data_type['syntax error']} {replace_words_with_values(text,data_type)}"
+        )
 
     text, var = preprocess_text(text)
+    if var in keywords:
+        return data_type["syntax error"]
     telugu_text = translate_text(text, var)
 
     return telugu_text
@@ -253,11 +275,13 @@ def declare_restruct(string):
             updated_string, match[-1], f"{match[-1]} {match1.group()[1:]}"
         )
     text = string.split("^")
-    return F"{text[0]} {text[1]}"
+    return f"{text[0]} {text[1]}"
 
 
 def cast_restruct(string):
-    pattern = r"function\s*(?:\([^)]*\))?\s*returning | block\s*(?:\([^)]*\))?\s*returning"
+    pattern = (
+        r"function\s*(?:\([^)]*\))?\s*returning | block\s*(?:\([^)]*\))?\s*returning"
+    )
     match = re.search(pattern, string)
     if match:
         extracted_string = match.group(0)
@@ -399,6 +423,7 @@ def transt1(text):
     text = re.sub(r"\$ ", "కి ", text)
     text = re.sub(r"\$  ", "కి ", text)
     text = re.sub(r"కి  3", "గా", text)
+    text = re.sub(r"కి 7", "గా", text)
     text = re.sub(r"కి  శ్రేణి", " యొక్క శ్రేణి", text)
     text = re.sub(r"కి శ్రేణి", " యొక్క శ్రేణి", text)
     telugu_text = replace_words_with_values(text, data_type)

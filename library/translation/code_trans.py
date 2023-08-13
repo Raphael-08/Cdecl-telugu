@@ -21,7 +21,7 @@ keywords: tuple = (
 )
 
 
-def preprocess_text(text: str) -> tuple[str,str]:
+def preprocess_text(text: str) -> tuple[str, str]:
     text = preprocess.args_restruct(text)
     text1: str = text
     sen_list: list[str] = text.split()
@@ -42,7 +42,8 @@ def translate_text(text: str, var: str) -> str:
     telugu_text: str = translate.replace_words_with_values(text, data_type)
     telugu_text = translate.arg_var(telugu_text)
     if telugu_text.endswith(data_type["cast"]):
-        telugu_text = translate.replace_last_occurrence(telugu_text, var, translate.variable(var))
+        telugu_text = translate.replace_last_occurrence(
+            telugu_text, var, translate.variable(var))
     else:
         telugu_text = telugu_text.replace(var, translate.variable(var), 1)
     telugu_text = translate.user_def_var(telugu_text)
@@ -55,7 +56,7 @@ def to_Tel(text: str) -> str:
         return data_type[text]
     if "bad character" in text:
         return (
-            f"{data_type['syntax error']} {translate.replace_words_with_values(text,data_type)}"
+            translate.replace_words_with_values(text, data_type)
         )
 
     text, var = preprocess_text(text)

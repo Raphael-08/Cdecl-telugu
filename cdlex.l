@@ -19,25 +19,20 @@ quit		return 0;
 [,]		return COMMA;
 
 auto		{ yylval.dynstr = ds(yytext);	return AUTO; }
-character	{ yylval.dynstr = ds("char");	return CHAR; }
 char		{ yylval.dynstr = ds(yytext);	return CHAR; }
 class		{ yylval.dynstr = ds(yytext);	return CLASS; }
-constant	{ yylval.dynstr = ds("const");	return CONSTVOLATILE; }
 const		{ yylval.dynstr = ds(yytext);	return CONSTVOLATILE; }
 double		{ yylval.dynstr = ds(yytext);	return DOUBLE; }
-enumeration	{ yylval.dynstr = ds("enum");	return ENUM; }
 enum		{ yylval.dynstr = ds(yytext);	return ENUM; }
 extern		{ yylval.dynstr = ds(yytext);	return EXTERN; }
 float		{ yylval.dynstr = ds(yytext);	return FLOAT; }
-integer		{ yylval.dynstr = ds("int");	return INT; }
-int		{ yylval.dynstr = ds(yytext);	return INT; }
+int		    { yylval.dynstr = ds(yytext);	return INT; }
 long		{ yylval.dynstr = ds(yytext);	return LONG; }
 noalias		{ yylval.dynstr = ds(yytext);	return CONSTVOLATILE; }
 register	{ yylval.dynstr = ds(yytext);	return REGISTER; }
 short		{ yylval.dynstr = ds(yytext);	return SHORT; }
 signed		{ yylval.dynstr = ds(yytext);	return SIGNED; }
 static		{ yylval.dynstr = ds(yytext);	return STATIC; }
-structure	{ yylval.dynstr = ds("struct");	return STRUCT; }
 struct		{ yylval.dynstr = ds(yytext);	return STRUCT; }
 union		{ yylval.dynstr = ds(yytext);	return UNION; }
 unsigned	{ yylval.dynstr = ds(yytext);	return UNSIGNED; }
@@ -47,7 +42,6 @@ volatile	{ yylval.dynstr = ds(yytext);	return CONSTVOLATILE; }
 {A}{AN}*	{ yylval.dynstr = ds(yytext);	return NAME; }
 {N}+		{ yylval.dynstr = ds(yytext);	return NUMBER; }
 
-[#].*		;
 [\t ]		;
 [&*[\]();^\n]	return *yytext;
 .		{

@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    print(f"translate : {translate.cache_info()}")
     if request.method == "POST":
         query: str | None = request.form.get("query")
         if query:
@@ -28,6 +27,7 @@ command: list[str] = [os.path.join(current_directory, "cdecl")]
 
 @lru_cache(None)
 def translate(query: str) -> str:
+    print(f"translate : {translate.cache_info()}")
     storage_classes: list[str] = ["auto", "extern", "static", "register"]
     q_l: list[str] = query.split()
     if q_l[0] in ("declare", "cast"):

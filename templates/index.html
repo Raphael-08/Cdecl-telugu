@@ -1,261 +1,29 @@
 <html>
-         <title>Cdecl:C gibberish → Telugu</title>
-         <head>
-             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-             </script>
-             <script type="text/javascript">
-                 $(document).ready(function() {
-                 var inputTimeout;
-                 $('#query').on('input', function() {
-                     clearTimeout(inputTimeout);
-                     var query = $(this).val();
-                     if (query.length >= 3) {
-                     inputTimeout = setTimeout(function() {
-                         $('#spinner').show(); // Show the loading GIF
-                         $.ajax({
-                         data: {
-                             query: query,
-                         },
-                         type: 'POST',
-                         url: '/'
-                         }).done(function(data) {
-                         $('#output').text(data.output).show();
-                         setTimeout(function() {
-                             $('#spinner').hide(); // Hide the loading GIF after a delay
-                         }, 100); // Adjust the delay as needed
-                         });
-                     }, 500);
-                     }
-                 });
-                 });
-             </script>
 
-             <style type="text/css">
-                 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:200');
-                 center{
-                         text-align:center;
-                     }
+<head>
+    <title>Cdecl: telugu</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
 
+<body>
+    <div class="encloser">
+        <div id="help">
+            <button id="sourceCodeButton" class="custom-btn btn-1">Source Code</button>
+        </div>
+        <input class="input" type="checkbox" id="dark-mode">
+        <label for="dark-mode"></label>
+        <div id="vert_spacer">&nbsp;</div>
+        <div id="title" ,class='center'>
+            <h1>cdecl</h1>
+            <h2>C gibberish <span class="arrow">&rarr;</span> Telugu</h2>
+            <input id="query" class="searcher" name="query" value="" autocomplete="off" size="5">
+            <div id="spinner" class="lds-dual-ring">
+            </div>
+            <div class="text_result" id="output"></div>
+        </div>
+    </div>
+</body>
 
-                 body  {
-                     background-image: url('https://static.pexels.com/photos/414171/pexels-photo-414171.jpeg');
-                         background-size:cover;
-                         background-repeat:no-repeat;
-                         width: 100%;
-                         height: 100%;
-                         -webkit-animation: slidein 100s;
-                         animation: slidein 100s;
-
-                         -webkit-animation-fill-mode: forwards;
-                         animation-fill-mode: forwards;
-
-                         -webkit-animation-iteration-count: infinite;
-                         animation-iteration-count: infinite;
-
-                         -webkit-animation-direction: alternate;
-                         animation-direction: alternate;
-                 }
-
-                 @-webkit-keyframes slidein {
-                 from {background-position: top; background-size:5000px; }
-                 to {background-position: -100px 0px;background-size:4750px;}
-                 }
-
-                 @keyframes slidein {
-                 from {background-position: top;background-size:5000px; }
-                 to {background-position: -100px 0px;background-size:4750px;}
-
-                 }
-
-                 .center
-                 {
-                 display: flex;
-                 align-items: center;
-                 justify-content: center;
-                 position: absolute;
-                 margin: 0;
-                 top: 0;
-                 right: 0;
-                 bottom: 0;
-                 left: 0;
-                 background: rgba(75, 75, 250, 0.3);
-                 border-radius: 3px;
-                 }
-                 .center h1{
-                 text-align:center;
-                 color:white;
-                 font-family: 'Source Code Pro', monospace;
-                 text-transform:uppercase;
-                 }
-
-                 #dark,
-                 #dark_top {
-                     background-color: #251e1e;
-                     width: 100%;
-                     z-index: -1;
-                     position: absolute;
-                     left: 0px;
-                     top: 0px;
-                 }
-
-                 #dark {
-                     height: 50%;
-                     top: 10px;
-                 }
-
-                 #dark_top {
-                     height: 30px;
-                 }
-
-                 h1,
-                 h2 {
-                     font-family: Monaco, "Lucida Console", Consolas, "Courier New", Courier, mono;
-                     margin: 0px;
-                     font-weight: normal;
-                     color: #080808;
-                 }
-
-                 h1 {
-                     font-size: 52px;
-                     text-indent: 120px;
-                     height: 69px;
-                 }
-
-                 h2 {
-                     font-size: 22px;
-                     text-indent: 125px;
-                     height: 32px;
-                 }
-
-                 #vert_spacer {
-                     height: 50%;
-                     width: 100%;
-                     margin: 0px;
-                     min-height: 220px;
-                 }
-
-                 #title {
-                     height: 400px;
-                     width: 100%;
-                     margin-top: -125px;
-                     position: relative;
-                     z-index: 2;
-                 }
-
-
-
-                 span.arrow {
-                     font: 26px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
-                 }
-
-                 .searcher {
-                     font-family: Monaco, Consolas, "Courier New", Courier, mono;
-                     font-size: 14pt;
-                     margin-left: 130px;
-                     margin-top: 20px;
-                     width: 70%;
-                     min-width: 500px;
-                     color :#080808
-                 }
-
-                 .text_result {
-                     font-family: Monaco, "Lucida Console", Consolas, "Courier New", Courier, mono;
-                     font-size: 16pt;
-                     margin-left: 180px;
-                     margin-right: 150px;
-                     margin-top: 20px;
-                     color :#080808
-                 }
-
-                 #spinner {
-                     position: relative;
-                     left: 125px;
-                     top: 9px;
-                     width: 34px;
-                     height: 34px;
-                     margin-bottom: -34px;
-                     display: none;
-                 }
-                 .lds-dual-ring {
-                     display: inline-block;
-                     width: 40px;
-                     height: 40px;
-                 }
-                 .lds-dual-ring:after {
-                     content: " ";
-                     display: block;
-                     width: 32px;
-                     height: 32px;
-                     margin: 4px;
-                     border-radius: 50%;
-                     border: 3px solid #5f5959;
-                     border-color: #1d1c1c transparent #1d1c1c transparent;
-                     animation: lds-dual-ring 1.2s linear infinite;
-                 }
-                 @keyframes lds-dual-ring {
-                     0% {
-                         transform: rotate(0deg);
-                     }
-                     100% {
-                         transform: rotate(360deg);
-                     }
-                 }
-                 @media only screen and (max-width: 540px) {
-                    h1 {
-                     font-size: 7.5vw;
-                     text-indent: 2.5vb;
-                     height: 30px;
-                 }
-                 h2 {
-                     font-size: 3vw;
-                     text-indent: 3vb;
-                     height: 30px;
-                 }
-                 #vert_spacer {
-                     height: 60%;
-                 }
-                 .searcher{
-                    font-size: 3vw;
-                    margin-left: 8vw;
-                    margin-right: 8vw;
-                    margin-top: 2vh;
-                    width: 50%;
-                    min-width: 350px;
-                 }
-                 .text_result{
-                    font-size: 3vw;
-                    margin-left: 5.5vb;
-                    margin-right: 0;
-                    margin-top: 1vh;
-                 }
-                 #spinner{
-                    left: 1.5vb;
-                    top: 4px;
-                 }
-                 .lds-dual-ring {
-                    width: 10px;
-                    height: 10px;
-                 }
-                 .lds-dual-ring:after {
-                     width: 20px;
-                     height: 20px;
-                 }
-                }
-             </style>
-
-
-         </head>
-         <body>
-                <div id="vert_spacer">&nbsp;</div>
-                <div id="title",class='center'>
-                    <h1>cdecl</h1>
-                    <h2>C gibberish <span class="arrow">&rarr;</span> Telugu</h2>
-                        <input id = "query" class = "searcher" name = "query"  value="" autocomplete="off" size ="5">
-                        <div id="spinner" class="lds-dual-ring">
-                        </div>
-                    <div class = "text_result" id="output"></div>
-                </div>
-
-     </body>
-     </html>
+</html>

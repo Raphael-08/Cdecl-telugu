@@ -7,7 +7,7 @@ Cdecl-telugu is a tool for translating c declarations to telugu.
 go to library folder and install the module translation.
 
 ```bash
-python setup.py install
+python3 setup.py install
 ```
 
 ## Usage

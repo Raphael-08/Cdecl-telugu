@@ -1,9 +1,13 @@
+<!DOCTYPE html>
 <html>
 
 <head>
     <title>Cdecl: telugu</title>
+    <script src="/static/js/zepto.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/js/script.js"></script>
+    <link rel='stylesheet' href='/static/css/material-refresh.min.css' />
+    <script src='/static/js/material-refresh.min.js'></script>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 
@@ -15,7 +19,7 @@
         <input class="input" type="checkbox" id="dark-mode">
         <label for="dark-mode"></label>
         <div id="vert_spacer">&nbsp;</div>
-        <div id="title" ,class='center'>
+        <div id="title" class='center'>
             <h1>cdecl</h1>
             <h2>C gibberish <span class="arrow">&rarr;</span> Telugu</h2>
             <input id="query" class="searcher" name="query" value="" autocomplete="off" size="5">
@@ -24,6 +28,13 @@
             <div class="text_result" id="output"></div>
         </div>
     </div>
+    <script>
+        mRefresh({
+            onBegin: function () {
+                location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

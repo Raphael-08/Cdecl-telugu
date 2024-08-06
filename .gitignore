@@ -1,7 +1,3 @@
 .history
 .vscode
 myenv
-c++decl
-cdecl
-cdgram.c
-cdlex.c

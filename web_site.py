@@ -22,7 +22,7 @@ def index():
 SYNTAX_ERROR = "syntax error"
 
 current_directory: str = os.getcwd()
-command: list[str] = [os.path.join(current_directory, "cdecl")]
+command: list[str] = [os.path.join(current_directory, "cdecl-bin-telugu/cdecl-telugu")]
 
 
 @lru_cache(None)

@@ -14,7 +14,7 @@ def index():
         if query:
             if query == "help":
                 return jsonify({"output": "సింటాక్స్ లోపం"})
-            return jsonify({"output": translate(query.strip())})
+            return jsonify({"output": code_to_tel(query.strip())})
         return jsonify({"error": "Error"})
     return render_template("index.html")
 
@@ -26,8 +26,8 @@ command: list[str] = [os.path.join(current_directory, "cdecl-bin-telugu/cdecl-te
 
 
 @lru_cache(None)
-def translate(query: str) -> str:
-    print(f"translate : {translate.cache_info()}")
+def code_to_tel(query: str) -> str:
+    print(f"translate : {code_to_tel.cache_info()}")
     storage_classes: list[str] = ["auto", "extern", "static", "register"]
     q_l: list[str] = query.split()
     if q_l[0] in ("declare", "cast"):

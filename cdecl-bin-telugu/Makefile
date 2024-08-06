@@ -29,14 +29,14 @@ INSTALL_DATA= install -c -m 644
 EMCC_OPTIONS= -sEXPORTED_FUNCTIONS=_run_from_js -sEXPORTED_RUNTIME_METHODS=ccall,cwrap -sENVIRONMENT=web -sWASM=0 -sINVOKE_RUN=0 -sMALLOC=emmalloc 
 
 cdecl: c++decl
-	ln -s c++decl cdecl
+	ln -s c++decl-telugu cdecl-telugu
 
 cdecl.js:  cdgram.c cdlex.c cdecl.c
 	emcc -std=c89 $(EMCC_OPTIONS) -Oz -Wno-deprecated-non-prototype cdecl.c -o cdecl.js
 
 c++decl: cdgram.c cdlex.c cdecl.c
-	$(CC) $(CFLAGS) -o c++decl cdecl.c $(LIBS)
-	rm -f cdecl
+	$(CC) $(CFLAGS) -o c++decl-telugu cdecl.c $(LIBS)
+	rm -f cdecl-telugu 
 
 cdlex.c: cdlex.l
 	lex cdlex.l && mv lex.yy.c cdlex.c
@@ -45,24 +45,24 @@ cdgram.c: cdgram.y
 	yacc cdgram.y && mv y.tab.c cdgram.c
 
 test: cdecl
-	@./cdecl < testset | diff -U 3 - test_expected_output.txt \
+	@./cdecl-telugu < testset | diff -U 3 - test_expected_output.txt \
 	  || ( echo "** Test failed **" && false ) \
 	  && echo "Tests passed"
 
 test_cpp: c++decl
-	./c++decl < testset++
+	./c++decl-telugu < testset++
 
 install: cdecl
-	$(INSTALL) cdecl $(BINDIR)
-	ln -s cdecl $(BINDIR)/c++decl
+	$(INSTALL) cdecl-telugu $(BINDIR)
+	ln -s cdecl-telugu $(BINDIR)/c++decl
 	$(INSTALL_DATA) cdecl.1 $(MANDIR)
 	$(INSTALL_DATA) c++decl.1 $(MANDIR)
 
 clean:
-	rm -f cdgram.c cdlex.c cdecl y.output c++decl cdecl.js cdecl.js.mem cdecl.wasm
+	rm -f cdgram.c cdlex.c cdecl-telugu y.output c++decl-telugu cdecl.js cdecl.js.mem cdecl.wasm
 
 clobber: clean
-	rm -f $(BINDIR)/cdecl $(BINDIR)/c++decl
+	rm -f $(BINDIR)/cdecl-telugu $(BINDIR)/c++decl
 	rm -f $(MANDIR)/cdecl.1 $(MANDIR)/c++decl.1
 	rm -f $(CATDIR)/cdecl.1.gz
 

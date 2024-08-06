@@ -214,6 +214,7 @@ span.arrow {
     font-size: 14pt;
     margin-left: 130px;
     margin-top: 20px;
+    height: 2rem;
     width: 70%;
     min-width: 500px;
     border-radius: 13px;
@@ -225,8 +226,11 @@ span.arrow {
 }
 
 .text_result {
-    font-family: Monaco, "Lucida Console", Consolas, "Courier New", Courier, mono;
-    font-size: 16pt;
+    font-family: "Noto Serif Telugu", serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+    font-size: 24pt;
     margin-left: 180px;
     margin-right: 150px;
     margin-top: 20px;

@@ -84,8 +84,13 @@ def tel_to_code(text):
         source_language="te", target_language="en", timeout=10
     )
     eng = translator.translate(text).lower().split()
+    print(eng)
     if "a" in eng:
-        eng.remove("a")
+        i = 3
+        print(eng[:i],eng[i:])
+        eng = eng[:i] + [w for w in eng[i:] if w != "a"]
+    if eng[-1] == "car":
+        eng[-1]="char"
     formatted_eng = " ".join(eng)
     return formatted_eng, command
 

@@ -20,9 +20,7 @@ def index():
             lang = detect_telugu(query)
             if query == "help":
                 return jsonify({"output": "సింటాక్స్ లోపం"})
-            if lang:
-                return jsonify({"output": translate(query.strip()), "font": False})
-            return jsonify({"output": translate(query.strip()), "font": True})
+            return jsonify({"output": translate(query.strip())})
         return jsonify({"error": "Error"})
     return render_template("index.html")
 

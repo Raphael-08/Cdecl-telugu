@@ -210,7 +210,8 @@ span.arrow {
 }
 
 .searcher {
-  font-family: Monaco, Consolas, "Courier New", Courier, mono;
+  font-family: Monaco, Consolas, "Courier New", Courier, mono,
+    "Noto Serif Telugu";
   font-size: 14pt;
   margin-left: 130px;
   margin-top: 20px;
@@ -222,23 +223,14 @@ span.arrow {
   background: transparent;
   border: 1px solid #666;
   padding: 0px 10px;
+  padding-top: 4px;
   box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.3),
     inset 0px -2px 6px rgba(255, 255, 255, 0.3);
 }
 
 .text_result {
-  font-family: "Noto Serif Telugu", serif;
-  font-optical-sizing: auto;
-  font-weight: 200;
-  font-style: normal;
-  font-size: 24pt;
-  margin-left: 180px;
-  margin-right: 150px;
-  margin-top: 20px;
-}
-
-.text_result_eng {
-  font-family: Arial, sans-serif; /* or any other font for English */
+  font-family: Monaco, "Lucida Console", Consolas, "Courier New", Courier, mono,
+    "Noto Serif Telugu";
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;

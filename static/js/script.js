@@ -15,11 +15,11 @@ $(document).ready(function () {
         }).done(function (data) {
           $("#output").text(data.output).show();
 
-          if (!data.font) {
-            $("#output").removeClass("text_result").addClass("text_result_eng");
-          } else {
-            $("#output").removeClass("text_result_eng").addClass("text_result");
-          }
+          // if (!data.font) {
+          //   $("#output").removeClass("text_result").addClass("text_result_eng");
+          // } else {
+          //   $("#output").removeClass("text_result_eng").addClass("text_result");
+          // }
 
           setTimeout(function () {
             $("#spinner").hide();
